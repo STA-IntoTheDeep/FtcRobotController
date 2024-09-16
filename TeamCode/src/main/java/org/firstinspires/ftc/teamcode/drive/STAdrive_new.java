@@ -5,7 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.robotParts_new.Drivetrain_new;
-import org.firstinspires.ftc.teamcode.robotParts_new.Onderdelen_new;
+import org.firstinspires.ftc.teamcode.robotParts_new.Arm_new;
+//import org.firstinspires.ftc.teamcode.robotParts_new.Onderdelen_new;
 //import org.firstinspires.ftc.teamcode.robotParts_new.Slides_new;
 
 @TeleOp(name = "STAdrive_new",group = "TeleOp")                                     //Naam van project
@@ -13,21 +14,27 @@ public class STAdrive_new extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();                                //Slaat op hoe lang de robot is geinitialiseerd
 
     //Slides_new slides = new Slides_new();
-    Drivetrain_new drivetrain = new Drivetrain_new();                               //Roept de drivetrain aan uit de geïmporteerde map
-    Onderdelen_new onderdelen = new Onderdelen_new();                               //Roept de onderdelen aan uit de geïmporteerde map
+    Drivetrain_new drivetrain = new Drivetrain_new();
+    Arm_new arm = new Arm_new();
+
+//    Onderdelen_new onderdelen = new Onderdelen_new();                               //Roept de onderdelen aan uit de geïmporteerde map
 
     @Override
     public void runOpMode() throws InterruptedException {
         drivetrain.init(hardwareMap);
-        onderdelen.init(hardwareMap);
-        //slides.init(hardwareMap);
+        arm.initArm(hardwareMap);
+//        onderdelen.init(hardwareMap);
+        //slides.init(hardwareMap);+-
+        
         waitForStart();
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {                                  //Loop van het rijden van de robot
             double y = -gamepad1.left_stick_x;                       //Koppelt geactiveerde knop op controller aan variabele
             double x = gamepad1.left_stick_y;
-            double rotate = gamepad1.right_stick_x;
+            double rotate = -gamepad1.right_stick_x;
+            double spinny = (gamepad1.right_trigger - gamepad1.left_trigger);
+
             //double maxPower;
 
             //boolean maxpowerdecrease = gamepad1.dpad_up;
@@ -39,6 +46,7 @@ public class STAdrive_new extends LinearOpMode {
                 maxPower = 1;
             }*/
             drivetrain.drive(x, y, rotate);                         //Voert bij drivetrain aangemaakte opdracht uit
+            arm.rotate(spinny);
 
             //boolean servo0_and_1_on = gamepad1.a;                         //Koppelt servobeweging aan variabele
             //boolean servo0_and_1_off = gamepad1.b;                        //Koppelt servobeweging aan variabele
