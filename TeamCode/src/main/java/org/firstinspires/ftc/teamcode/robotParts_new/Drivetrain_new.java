@@ -10,8 +10,6 @@ public class Drivetrain_new {
     private DcMotorEx leftBack;
     private DcMotorEx rightBack;
 
-
-
     public void init(HardwareMap map) {
         leftFront = map.get(DcMotorEx.class, "left_front");
         rightFront = map.get(DcMotorEx.class, "right_front");
@@ -22,12 +20,12 @@ public class Drivetrain_new {
 
         //MotorX.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-    public void drive(double forward, double right, double rotate) {
-        double leftFrontPower = forward + right + rotate;
-        double rightFrontPower = forward - right - rotate;
-        double rightRearPower = forward + right - rotate;
-        double leftRearPower = forward - right + rotate;
-        double maxPower = 1;
+    public void drive(double forward, double right, double rotate, double GasGasGas) {
+        double leftFrontPower = -forward + right + rotate;
+        double rightFrontPower = -forward + right - rotate;
+        double rightRearPower = -forward - right - rotate;
+        double leftRearPower = -forward - right + rotate;
+        double maxPower = GasGasGas;
 
         maxPower = Math.max(maxPower, Math.abs(leftFrontPower));
         maxPower = Math.max(maxPower, Math.abs(rightFrontPower));
