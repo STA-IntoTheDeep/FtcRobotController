@@ -19,7 +19,7 @@ public class STAdrive_No_Fwiends extends LinearOpMode {
     Onderdelen_new onderdelen = new Onderdelen_new();                               //Roept de onderdelen aan uit de geïmporteerde map
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() {
         drivetrain.init(hardwareMap);
         arm.initArm(hardwareMap);
         onderdelen.init(hardwareMap);
