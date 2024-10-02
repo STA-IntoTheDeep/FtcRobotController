@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.robotParts_new.Arm_new;
+import org.firstinspires.ftc.teamcode.robotParts_new.arm_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Drivetrain_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Onderdelen_new;
 
@@ -14,7 +14,7 @@ public class STAdrive_No_Fwiends extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();                                //Slaat op hoe lang de robot is geinitialiseerd
 
     Drivetrain_new drivetrain = new Drivetrain_new();
-    Arm_new arm = new Arm_new();
+    arm_new arm = new arm_new();
 
     Onderdelen_new onderdelen = new Onderdelen_new();                               //Roept de onderdelen aan uit de geïmporteerde map
 
@@ -41,7 +41,7 @@ public class STAdrive_No_Fwiends extends LinearOpMode {
 
             //Zet zin op het scherm
             //telemetry.addData("Verstreken tijd", getRuntime());     //Zet data op het scherm
-            telemetry.addData("armPos", arm.arm.getCurrentPosition());
+            //telemetry.addData("armPos", arm.arm.getCurrentPosition());
             telemetry.update();
             //Zorgt dat data geüpdated blijft
             // max position arm is 7000
