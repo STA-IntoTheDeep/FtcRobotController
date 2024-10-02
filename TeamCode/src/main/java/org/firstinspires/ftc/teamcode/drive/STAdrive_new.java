@@ -39,7 +39,7 @@ public class STAdrive_new extends LinearOpMode {
             }
             //Zet zin op het scherm
             //telemetry.addData("Verstreken tijd", getRuntime());     //Zet data op het scherm
-            telemetry.addData("armPos",arm.arm.getCurrentPosition());
+            telemetry.addData("armPos",arm.getCurrentPos());
             telemetry.update();
             //Zorgt dat data geüpdated blijft
             // max position arm is 7000

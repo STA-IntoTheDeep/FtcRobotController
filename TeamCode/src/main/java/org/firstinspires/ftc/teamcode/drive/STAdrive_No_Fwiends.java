@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.robotParts_new.arm_new;
+import org.firstinspires.ftc.teamcode.robotParts_new.Arm_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Drivetrain_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Onderdelen_new;
 
@@ -14,12 +14,12 @@ public class STAdrive_No_Fwiends extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();                                //Slaat op hoe lang de robot is geinitialiseerd
 
     Drivetrain_new drivetrain = new Drivetrain_new();
-    arm_new arm = new arm_new();
+    Arm_new arm = new Arm_new();
 
     Onderdelen_new onderdelen = new Onderdelen_new();                               //Roept de onderdelen aan uit de geïmporteerde map
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         drivetrain.init(hardwareMap);
         arm.initArm(hardwareMap);
         onderdelen.init(hardwareMap);
@@ -47,30 +47,23 @@ public class STAdrive_No_Fwiends extends LinearOpMode {
             // max position arm is 7000
             // min position arm is 2738
 
-            double shpeeed;
 
-            boolean maxpowerdecrease = gamepad1.right_bumper;
+            double speed = 3 * gamepad1.right_trigger + 1;
 
-
-            if (maxpowerdecrease) {
-                shpeeed = 5;
-            } else {
-                shpeeed = 1;
-            }
-            drivetrain.drive(x, y, rotate, shpeeed);                         //Voert bij drivetrain aangemaakte opdracht uit
+            drivetrain.drive(x, y, rotate, speed);                         //Voert bij drivetrain aangemaakte opdracht uit
             arm.rotate(spinny);
 
-            double servo0_on = gamepad1.right_trigger;                         //Koppelt servobeweging aan variabele
-            double servo0_off = gamepad1.left_trigger;
+            boolean servo0_on = gamepad1.right_bumper;                         //Koppelt servobeweging aan variabele
+            boolean servo0_off = gamepad1.left_bumper;
 
             //Koppelt servobeweging aan variabele
             //boolean servo2grijpnaarbinnen = gamepad1.right_bumper;
             //boolean servo2grijpnaarbuiten = gamepad1.left_bumper;
 
-            if (servo0_on > 0.0420) {
+            if (servo0_on) {
                 servopos += 0.003;
                 onderdelen.servo0(servopos);
-            } else if (servo0_off > 0.0420) {
+            } else if (servo0_off) {
                 if (servopos > 0) {
                     servopos -= 0.003;
                 }

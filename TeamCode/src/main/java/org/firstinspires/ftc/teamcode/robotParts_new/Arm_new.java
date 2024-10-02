@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class arm_new {
+public class Arm_new {
     private DcMotorEx arm;
     double armPos;
     public void initArm(HardwareMap map) {
@@ -15,5 +15,9 @@ public class arm_new {
     public void rotate (double power){
         armPos = arm.getCurrentPosition();
         arm.setPower(power);
+    }
+
+    public double getCurrentPos (){
+        return arm.getCurrentPosition();
     }
 }

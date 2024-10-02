@@ -5,14 +5,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-import org.firstinspires.ftc.teamcode.robotParts_new.arm_new;
+import org.firstinspires.ftc.teamcode.robotParts_new.Arm_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Drivetrain_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Onderdelen_new;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import java.lang.Math;
 
 @Autonomous(name = "Autonomous", group = "Autonomous")
 //Naam van project
@@ -20,7 +18,7 @@ public class Auton extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();                            //Slaat op hoe lang de robot is geinitialiseerd
 
 
-    arm_new arm = new arm_new();
+    Arm_new arm = new Arm_new();
     Drivetrain_new train = new Drivetrain_new();
     Onderdelen_new parts = new Onderdelen_new();                               //Roept de onderdelen aan uit de geïmporteerde map
 
@@ -77,6 +75,11 @@ public class Auton extends LinearOpMode {
                         va = 0;
                         vy = 5;
                         stage = 3;
+                        break;
+                    case 3:
+                    case 4:
+                        vy = 0;
+                        va = 5;
                         break;
                     default:
                         vx = 0;

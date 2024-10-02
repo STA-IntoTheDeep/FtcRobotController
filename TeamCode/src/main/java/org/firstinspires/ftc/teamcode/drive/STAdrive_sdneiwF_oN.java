@@ -40,36 +40,29 @@ public class STAdrive_sdneiwF_oN extends LinearOpMode {
             
             //Zet zin op het scherm
             //telemetry.addData("Verstreken tijd", getRuntime());     //Zet data op het scherm
-            telemetry.addData("armPos",arm.arm.getCurrentPosition());
+            telemetry.addData("armPos",arm.getCurrentPos());
             telemetry.update();
             //Zorgt dat data geüpdated blijft
             // max position arm is 7000
             // min position arm is 2738
 
-            double shpeeed;
 
-            boolean maxpowerdecrease = gamepad1.right_bumper;           //laat de robot langzamer rijden
+            double speed = 3 * gamepad1.right_trigger + 1;
 
-
-            if (maxpowerdecrease) {
-                shpeeed = 3;
-            } else {
-                shpeeed = 1;
-            }
-            drivetrain.drive(x, y, rotate, shpeeed);                         //Voert bij drivetrain aangemaakte opdracht uit
+            drivetrain.drive(x, y, rotate, speed);                         //Voert bij drivetrain aangemaakte opdracht uit
             arm.rotate(spinny);
 
-            double servo0_on = gamepad1.right_trigger;                         //Koppelt servobeweging aan variabele
-            double servo0_off = gamepad1.left_trigger;
+            boolean servo0_on = gamepad1.right_bumper;                         //Koppelt servobeweging aan variabele
+            boolean servo0_off = gamepad1.left_bumper;
 
             //Koppelt servobeweging aan variabele
             //boolean servo2grijpnaarbinnen = gamepad1.right_bumper;
             //boolean servo2grijpnaarbuiten = gamepad1.left_bumper;
 
-            if (servo0_on!=0) {
+            if (servo0_on) {
                 servopos += 0.003;
                 onderdelen.servo0(servopos);
-            } else if (servo0_off!=0) {
+            } else if (servo0_off) {
                 if (servopos > 0) {
                     servopos -= 0.003;
                 }
