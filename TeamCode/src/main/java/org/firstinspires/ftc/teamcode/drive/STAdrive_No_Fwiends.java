@@ -33,6 +33,9 @@ public class STAdrive_No_Fwiends extends LinearOpMode {
             double x = gamepad1.left_stick_y;
             double rotate = -0.75 * gamepad1.right_stick_x;
             double spinny = (0.75 * gamepad1.right_stick_y);
+            boolean armCalibration = gamepad1.x;
+            double armDisplacement = 0;
+            double armPos = arm.getCurrentPos() - armDisplacement;
             /*if (rotate != 0) {
                 telemetry.addLine("chippi chippi chappa chappa");
             } else {
@@ -59,7 +62,9 @@ public class STAdrive_No_Fwiends extends LinearOpMode {
             //Koppelt servobeweging aan variabele
             //boolean servo2grijpnaarbinnen = gamepad1.right_bumper;
             //boolean servo2grijpnaarbuiten = gamepad1.left_bumper;
-
+            if (armCalibration){
+                armDisplacement = arm.getCurrentPos();
+            }
             if (servo0_on) {
                 servopos += 0.003;
                 onderdelen.servo0(servopos);
@@ -71,6 +76,10 @@ public class STAdrive_No_Fwiends extends LinearOpMode {
 
             }
             telemetry.addData("Servopos", servopos);
+            telemetry.addData("armPos", armPos);
+            telemetry.addData("Wheelpos", "error" );
+            telemetry.addData("podpos_x",drivetrain.pos_x());
+            telemetry.addData("podpos_y",drivetrain.pos_y());
             /*if (servo2grijpnaarbinnen) {
                 onderdelen.servo2(0.85);
             } else if (servo2grijpnaarbuiten) {

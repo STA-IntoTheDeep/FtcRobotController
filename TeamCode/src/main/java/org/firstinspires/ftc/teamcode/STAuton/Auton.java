@@ -47,6 +47,8 @@ public class Auton extends LinearOpMode {
     double fr = 0; //front right motor
     double bl = 0; //back left motor
     double br = 0; //back right motor
+    double pos_x = train.pos_x(); //x position
+    double pos_y = train.pos_y(); // y position
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -56,6 +58,7 @@ public class Auton extends LinearOpMode {
         while (opModeIsActive()) {
             telemetry.addData("autonomous mode enabled", autoEnabled);
             telemetry.addData("has initialized", hasInit);
+
             if (autoEnabled) {
                 double ms = runtime.milliseconds();
                 int stage = 0;
@@ -63,7 +66,7 @@ public class Auton extends LinearOpMode {
                 telemetry.addData("stage", stage);
                 switch (stage) {
                     case 0:
-                        vx = 5;
+                        vx = 1;
                         stage = 1;
                         break;
                     case 1:
@@ -103,7 +106,7 @@ public class Auton extends LinearOpMode {
 
             //handle movement
             if (!manual) {
-                train.drive(vx, vy, va, 5);
+                train.drive(vx, vy, va, 10);
             } else if (hasInit) {
                 leftFront.setPower(fl / 1000);
                 rightFront.setPower(fr / 1000);

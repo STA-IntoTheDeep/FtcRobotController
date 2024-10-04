@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.robotParts_new;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Drivetrain_new {
@@ -9,17 +11,30 @@ public class Drivetrain_new {
     private DcMotorEx rightFront;
     private DcMotorEx leftBack;
     private DcMotorEx rightBack;
-
+    double startup_x;
+    double startup_y;
     public void init(HardwareMap map) {
         leftFront = map.get(DcMotorEx.class, "left_front");
         rightFront = map.get(DcMotorEx.class, "right_front");
         leftBack = map.get(DcMotorEx.class, "left_back");
         rightBack = map.get(DcMotorEx.class, "right_back");
+        startup_x = rightFront.getCurrentPosition();
+        startup_y = rightBack.getCurrentPosition();
+        rightBack.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        rightFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        leftBack.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        leftFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
     }
         //MotorX.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //MotorX.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    public double pos_x(){
+        return rightFront.getCurrentPosition()-startup_x;
 
+    }
+    public double pos_y(){
+        return rightBack.getCurrentPosition()-startup_y;
+    }
     public void drive(double forward, double right, double rotate, double GasGasGas) {
         double leftFrontPower = -forward + right + rotate;
         double rightFrontPower = -forward + right - rotate;

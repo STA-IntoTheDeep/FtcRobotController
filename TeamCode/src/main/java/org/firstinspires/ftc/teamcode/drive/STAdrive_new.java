@@ -68,6 +68,8 @@ public class STAdrive_new extends LinearOpMode {
 
             }
             telemetry.addData("Servopos",servopos);
+            telemetry.addData("podpos_x",drivetrain.pos_x());
+            telemetry.addData("podpos_y",drivetrain.pos_y());
             /*if (servo2grijpnaarbinnen) {
                 onderdelen.servo2(0.85);
             } else if (servo2grijpnaarbuiten) {

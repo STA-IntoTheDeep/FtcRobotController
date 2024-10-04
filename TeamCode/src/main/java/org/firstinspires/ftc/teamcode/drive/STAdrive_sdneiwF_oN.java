@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.STAuton.Sensors;
 import org.firstinspires.ftc.teamcode.robotParts_new.Arm_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Drivetrain_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Onderdelen_new;
@@ -14,6 +15,7 @@ public class STAdrive_sdneiwF_oN extends LinearOpMode {
 
     Drivetrain_new drivetrain = new Drivetrain_new();
     Arm_new arm = new Arm_new();
+    Sensors sensor = new Sensors();
 
     Onderdelen_new onderdelen = new Onderdelen_new();                               //Roept de onderdelen aan uit de geïmporteerde map
 
@@ -22,6 +24,7 @@ public class STAdrive_sdneiwF_oN extends LinearOpMode {
         drivetrain.init(hardwareMap);
         arm.initArm(hardwareMap);
         onderdelen.init(hardwareMap);
+        sensor.init(hardwareMap);
 
         waitForStart();
         if (isStopRequested()) return;
@@ -30,7 +33,7 @@ public class STAdrive_sdneiwF_oN extends LinearOpMode {
         while (opModeIsActive()) {                                  //Loop van het rijden van de robot
             double y = gamepad1.left_stick_x;                       //Koppelt geactiveerde knop op controller aan variabele
             double x = -gamepad1.left_stick_y;
-            double rotate = 0.75*gamepad1.right_stick_x;
+            double rotate = -0.75*gamepad1.right_stick_x;
             double spinny = (-0.75*gamepad1.right_stick_y);
             /*if (rotate != 0) {
                 telemetry.addLine("chippi chippi chappa chappa");                       //dont question it
@@ -70,6 +73,8 @@ public class STAdrive_sdneiwF_oN extends LinearOpMode {
 
             }
             telemetry.addData("Servopos",servopos);
+            telemetry.addData("podpos_x",drivetrain.pos_x());
+            telemetry.addData("podpos_y",drivetrain.pos_y());
             /*if (servo2grijpnaarbinnen) {
                 onderdelen.servo2(0.85);
             } else if (servo2grijpnaarbuiten) {
