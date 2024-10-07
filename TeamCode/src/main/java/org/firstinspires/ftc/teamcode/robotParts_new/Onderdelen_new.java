@@ -8,7 +8,6 @@ public class Onderdelen_new {
     private Servo servo0;
     public void init(HardwareMap map) {
         servo0 = map.get(Servo.class, "servo0");
-
     }
     public void servo0(double direction){
         servo0.setPosition(direction);

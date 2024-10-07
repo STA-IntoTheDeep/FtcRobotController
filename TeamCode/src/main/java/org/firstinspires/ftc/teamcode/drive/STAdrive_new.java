@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.robotParts_new.Arm_Two_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Drivetrain_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Arm_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Onderdelen_new;
@@ -14,7 +15,7 @@ public class STAdrive_new extends LinearOpMode {
 
     Drivetrain_new drivetrain = new Drivetrain_new();
     Arm_new arm = new Arm_new();
-
+    Arm_Two_new arm2 = new Arm_Two_new();
     Onderdelen_new onderdelen = new Onderdelen_new();                               //Roept de onderdelen aan uit de geïmporteerde map
 
     @Override
@@ -22,6 +23,7 @@ public class STAdrive_new extends LinearOpMode {
         drivetrain.init(hardwareMap);
         arm.initArm(hardwareMap);
         onderdelen.init(hardwareMap);
+        arm2.initArm2(hardwareMap);
         
         waitForStart();
         if (isStopRequested()) return;
@@ -31,13 +33,13 @@ public class STAdrive_new extends LinearOpMode {
             double y = -gamepad1.left_stick_x;                       //Koppelt geactiveerde knop op controller aan variabele
             double x = gamepad1.left_stick_y;
             double rotate = -0.75*gamepad1.right_stick_x;
-            double spinny = (-0.75*gamepad2.left_stick_y);
-            if (rotate != 0) {
-                telemetry.addLine("chippi chippi chappa chappa");
-            } else {
-                telemetry.addLine("No chippi chippi chappa chappa D:");
-            }
-            //Zet zin op het scherm
+            double arm1Velocity = (-0.75*gamepad2.left_stick_y);
+            double arm2Velocity = (-0.75*gamepad2.right_stick_y);
+            boolean armCalibration = gamepad2.x;
+            double armDisplacement = 0;
+            double armDisplacement2 = 0;
+
+
             //telemetry.addData("Verstreken tijd", getRuntime());     //Zet data op het scherm
             telemetry.addData("armPos",arm.getCurrentPos());
             telemetry.update();
@@ -48,7 +50,8 @@ public class STAdrive_new extends LinearOpMode {
             double speed = 3 * gamepad1.right_trigger + 1;
 
             drivetrain.drive(x, y, rotate, speed);                         //Voert bij drivetrain aangemaakte opdracht uit
-            arm.rotate(spinny);
+            arm.rotate(arm1Velocity);
+            arm2.rotate2(arm2Velocity);
 
             boolean servo0_on = gamepad2.left_bumper;                         //Koppelt servobeweging aan variabele
             boolean servo0_off = gamepad2.right_bumper;
@@ -56,6 +59,12 @@ public class STAdrive_new extends LinearOpMode {
             //Koppelt servobeweging aan variabele
             //boolean servo2grijpnaarbinnen = gamepad1.right_bumper;
             //boolean servo2grijpnaarbuiten = gamepad1.left_bumper;
+            if (armCalibration){
+                armDisplacement = arm.getCurrentPos();
+                armDisplacement2 = arm2.getCurrentPos();
+            }
+            double armPos = arm.getCurrentPos() - armDisplacement;
+            double armPos2 = arm2.getCurrentPos() - armDisplacement2;
 
             if (servo0_on) {
                 servopos += 0.003;
@@ -67,7 +76,10 @@ public class STAdrive_new extends LinearOpMode {
                 onderdelen.servo0(servopos);
 
             }
-            telemetry.addData("Servopos",servopos);
+            telemetry.addData("Servopos", servopos);
+            telemetry.addData("ArmPos",armPos);
+            telemetry.addData("ArmPos2",armPos2);
+            //telemetry.addData("Wheelpos", "error" );
             telemetry.addData("podpos_x",drivetrain.pos_x());
             telemetry.addData("podpos_y",drivetrain.pos_y());
             /*if (servo2grijpnaarbinnen) {

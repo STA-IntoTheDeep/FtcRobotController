@@ -4,21 +4,18 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.STAuton.Sensors;
 import org.firstinspires.ftc.teamcode.robotParts_new.Arm_Two_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Arm_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Drivetrain_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Onderdelen_new;
 
-@TeleOp(name = "STAdrive_sdneiwF_oN",group = "TeleOp")                                     //Naam van project
-public class STAdrive_sdneiwF_oN extends LinearOpMode {
+@TeleOp(name = "STAdrive_new",group = "TeleOp")                                     //Naam van project
+public class wen_evirdATS extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();                                //Slaat op hoe lang de robot is geinitialiseerd
 
     Drivetrain_new drivetrain = new Drivetrain_new();
     Arm_new arm = new Arm_new();
     Arm_Two_new arm2 = new Arm_Two_new();
-    Sensors sensor = new Sensors();
-
     Onderdelen_new onderdelen = new Onderdelen_new();                               //Roept de onderdelen aan uit de geïmporteerde map
 
     @Override
@@ -26,9 +23,8 @@ public class STAdrive_sdneiwF_oN extends LinearOpMode {
         drivetrain.init(hardwareMap);
         arm.initArm(hardwareMap);
         onderdelen.init(hardwareMap);
-        sensor.init(hardwareMap);
         arm2.initArm2(hardwareMap);
-
+        
         waitForStart();
         if (isStopRequested()) return;
         double servopos = 0;
@@ -36,53 +32,29 @@ public class STAdrive_sdneiwF_oN extends LinearOpMode {
         while (opModeIsActive()) {                                  //Loop van het rijden van de robot
             double y = -gamepad1.left_stick_x;                       //Koppelt geactiveerde knop op controller aan variabele
             double x = gamepad1.left_stick_y;
-            double rotate = -0.75 * gamepad1.right_stick_x;
-            boolean armCalibration = gamepad1.y;
+            double rotate = -0.75*gamepad1.right_stick_x;
+            double spinny = (-0.75*gamepad2.left_stick_y);
+            double spinny_2 = (-0.75*gamepad2.right_stick_y);
+            boolean armCalibration = gamepad2.x;
             double armDisplacement = 0;
             double armDisplacement2 = 0;
-            double arm1Velocity;
-            double arm2Velocity;
-            boolean arm1RotateUp = gamepad1.dpad_up;
-            boolean arm1RotateDown = gamepad1.dpad_down;
-            boolean arm2RotateUp = gamepad1.x;
-            boolean arm2RotateDown = gamepad1.b;
-            if (arm1RotateUp) {
-                arm1Velocity = 0.5;
-            } else if (arm1RotateDown){
-                arm1Velocity = -0.5;
-            } else{
-                arm1Velocity = 0;
-            }
-            if (arm2RotateUp) {
-                arm2Velocity = 0.5;
-            } else if (arm2RotateDown){
-                arm2Velocity = -0.5;
-            } else{
-                arm2Velocity = 0;
-            }
-            /*if (rotate != 0) {
-                telemetry.addLine("chippi chippi chappa chappa");                       //dont question it
-            } else {
-                telemetry.addLine("No chippi chippi chappa chappa D:");
-            }*/
 
             //Zet zin op het scherm
             //telemetry.addData("Verstreken tijd", getRuntime());     //Zet data op het scherm
-
+            telemetry.addData("armPos",arm.getCurrentPos());
             telemetry.update();
             //Zorgt dat data geüpdated blijft
             // max position arm is 7000
             // min position arm is 2738
 
-
             double speed = 3 * gamepad1.right_trigger + 1;
 
-            drivetrain.drive(x, y, rotate, speed);                         //Voert bij drivetrain aangemaakte opdracht uit
-            arm.rotate(arm1Velocity);
-            arm2.rotate2(arm2Velocity);
+            drivetrain.drive(-x, -y, -rotate, speed);                         //Voert bij drivetrain aangemaakte opdracht uit
+            arm.rotate(spinny);
+            arm2.rotate2(spinny_2);
 
-            boolean servo0_on = gamepad1.right_bumper;                         //Koppelt servobeweging aan variabele
-            boolean servo0_off = gamepad1.left_bumper;
+            boolean servo0_on = gamepad2.left_bumper;                         //Koppelt servobeweging aan variabele
+            boolean servo0_off = gamepad2.right_bumper;
 
             //Koppelt servobeweging aan variabele
             //boolean servo2grijpnaarbinnen = gamepad1.right_bumper;
@@ -96,19 +68,19 @@ public class STAdrive_sdneiwF_oN extends LinearOpMode {
 
             if (servo0_on) {
                 servopos += 0.003;
-                onderdelen.servo0(servopos);
+                onderdelen.servo0(-servopos);
             } else if (servo0_off) {
                 if (servopos > 0) {
                     servopos -= 0.003;
                 }
-                onderdelen.servo0(servopos);
+                onderdelen.servo0(-servopos);
 
             }
             telemetry.addData("Servopos",servopos);
-            telemetry.addData("ArmPos",armPos);
-            telemetry.addData("ArmPos2",armPos2);
             telemetry.addData("podpos_x",drivetrain.pos_x());
             telemetry.addData("podpos_y",drivetrain.pos_y());
+            telemetry.addData("ArmPos",armPos);
+            telemetry.addData("ArmPos2",armPos2);
             /*if (servo2grijpnaarbinnen) {
                 onderdelen.servo2(0.85);
             } else if (servo2grijpnaarbuiten) {
@@ -128,5 +100,5 @@ public class STAdrive_sdneiwF_oN extends LinearOpMode {
 
 
 
-        }
+    }
     }

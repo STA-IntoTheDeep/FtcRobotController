@@ -13,6 +13,7 @@ public class Drivetrain_new {
     private DcMotorEx rightBack;
     double startup_x;
     double startup_y;
+
     public void init(HardwareMap map) {
         leftFront = map.get(DcMotorEx.class, "left_front");
         rightFront = map.get(DcMotorEx.class, "right_front");
@@ -25,21 +26,23 @@ public class Drivetrain_new {
         leftBack.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         leftFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
     }
-        //MotorX.setDirection(DcMotorSimple.Direction.REVERSE);
+    //MotorX.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        //MotorX.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    public double pos_x(){
-        return rightFront.getCurrentPosition()-startup_x;
+    //MotorX.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    public double pos_x() {
+        return rightFront.getCurrentPosition() - startup_x;
 
     }
-    public double pos_y(){
-        return rightBack.getCurrentPosition()-startup_y;
+
+    public double pos_y() {
+        return rightBack.getCurrentPosition() - startup_y;
     }
+
     public void drive(double forward, double right, double rotate, double GasGasGas) {
-        double leftFrontPower = -forward + right + rotate;
+        double leftFrontPower = -forward - right + rotate;
         double rightFrontPower = -forward + right - rotate;
         double rightRearPower = -forward - right - rotate;
-        double leftRearPower = -forward - right + rotate;
+        double leftRearPower = -forward + right + rotate;
         double maxPower = GasGasGas;
 
         maxPower = Math.max(maxPower, Math.abs(leftFrontPower));
@@ -49,7 +52,7 @@ public class Drivetrain_new {
 
         leftFront.setPower(leftFrontPower / maxPower);
         rightFront.setPower(-rightFrontPower / maxPower);
-        rightBack.setPower(-1*-rightRearPower / maxPower);            //-- omdat gears
+        rightBack.setPower(-1 * -rightRearPower / maxPower);            //-- omdat gears
         leftBack.setPower(leftRearPower / maxPower);
     }
 }

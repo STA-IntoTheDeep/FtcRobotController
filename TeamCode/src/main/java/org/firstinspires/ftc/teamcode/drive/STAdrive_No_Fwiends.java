@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.robotParts_new.Arm_Two_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Arm_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Drivetrain_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Onderdelen_new;
@@ -15,6 +16,7 @@ public class STAdrive_No_Fwiends extends LinearOpMode {
 
     Drivetrain_new drivetrain = new Drivetrain_new();
     Arm_new arm = new Arm_new();
+    Arm_Two_new arm2 = new Arm_Two_new();
 
     Onderdelen_new onderdelen = new Onderdelen_new();                               //Roept de onderdelen aan uit de geïmporteerde map
 
@@ -23,6 +25,7 @@ public class STAdrive_No_Fwiends extends LinearOpMode {
         drivetrain.init(hardwareMap);
         arm.initArm(hardwareMap);
         onderdelen.init(hardwareMap);
+        arm2.initArm2(hardwareMap);
 
         waitForStart();
         if (isStopRequested()) return;
@@ -32,16 +35,29 @@ public class STAdrive_No_Fwiends extends LinearOpMode {
             double y = -gamepad1.left_stick_x;                       //Koppelt geactiveerde knop op controller aan variabele
             double x = gamepad1.left_stick_y;
             double rotate = -0.75 * gamepad1.right_stick_x;
-            double spinny = (0.75 * gamepad1.right_stick_y);
-            boolean armCalibration = gamepad1.x;
+            boolean armCalibration = gamepad1.y;
             double armDisplacement = 0;
-            double armPos = arm.getCurrentPos() - armDisplacement;
-            /*if (rotate != 0) {
-                telemetry.addLine("chippi chippi chappa chappa");
-            } else {
-                telemetry.addLine("No chippi chippi chappa chappa D:");
-            }*/
-
+            double armDisplacement2 = 0;
+            double arm1Velocity;
+            double arm2Velocity;
+            boolean arm1RotateUp = gamepad1.dpad_up;
+            boolean arm1RotateDown = gamepad1.dpad_down;
+            boolean arm2RotateUp = gamepad1.x;
+            boolean arm2RotateDown = gamepad1.b;
+            if (arm1RotateUp) {
+                arm1Velocity = 0.5;
+            } else if (arm1RotateDown){
+                arm1Velocity = -0.5;
+            } else{
+                arm1Velocity = 0;
+            }
+            if (arm2RotateUp) {
+                arm2Velocity = 0.5;
+            } else if (arm2RotateDown){
+                arm2Velocity = -0.5;
+            } else{
+                arm2Velocity = 0;
+            }
             //Zet zin op het scherm
             //telemetry.addData("Verstreken tijd", getRuntime());     //Zet data op het scherm
             //telemetry.addData("armPos", arm.arm.getCurrentPosition());
@@ -54,7 +70,8 @@ public class STAdrive_No_Fwiends extends LinearOpMode {
             double speed = 3 * gamepad1.right_trigger + 1;
 
             drivetrain.drive(x, y, rotate, speed);                         //Voert bij drivetrain aangemaakte opdracht uit
-            arm.rotate(spinny);
+            arm.rotate(arm1Velocity);
+            arm2.rotate2(arm2Velocity);
 
             boolean servo0_on = gamepad1.right_bumper;                         //Koppelt servobeweging aan variabele
             boolean servo0_off = gamepad1.left_bumper;
@@ -64,7 +81,11 @@ public class STAdrive_No_Fwiends extends LinearOpMode {
             //boolean servo2grijpnaarbuiten = gamepad1.left_bumper;
             if (armCalibration){
                 armDisplacement = arm.getCurrentPos();
+                armDisplacement2= arm2.getCurrentPos();
             }
+            double armPos = arm.getCurrentPos() - armDisplacement;
+            double armPos2 = arm2.getCurrentPos() - armDisplacement2;
+
             if (servo0_on) {
                 servopos += 0.003;
                 onderdelen.servo0(servopos);
@@ -76,7 +97,8 @@ public class STAdrive_No_Fwiends extends LinearOpMode {
 
             }
             telemetry.addData("Servopos", servopos);
-            telemetry.addData("armPos", armPos);
+            telemetry.addData("ArmPos",armPos);
+            telemetry.addData("ArmPos2",armPos2);
             telemetry.addData("Wheelpos", "error" );
             telemetry.addData("podpos_x",drivetrain.pos_x());
             telemetry.addData("podpos_y",drivetrain.pos_y());
