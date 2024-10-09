@@ -10,8 +10,8 @@ import org.firstinspires.ftc.teamcode.robotParts_new.Arm_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Drivetrain_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Onderdelen_new;
 
-@TeleOp(name = "STAdrive_sdneiwF_oN",group = "TeleOp")                                     //Naam van project
-public class STAdrive_sdneiwF_oN extends LinearOpMode {
+@TeleOp(name = "STAdrive_1_player_reversed_driving",group = "TeleOp")                                     //Naam van project
+public class STAdrive_1_player_reversed_driving extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();                                //Slaat op hoe lang de robot is geinitialiseerd
 
     Drivetrain_new drivetrain = new Drivetrain_new();
@@ -37,26 +37,27 @@ public class STAdrive_sdneiwF_oN extends LinearOpMode {
             double y = -gamepad1.left_stick_x;                       //Koppelt geactiveerde knop op controller aan variabele
             double x = gamepad1.left_stick_y;
             double rotate = -0.75 * gamepad1.right_stick_x;
-            boolean armCalibration = gamepad1.y;
+            double armPowerDecrease = 3*gamepad1.left_trigger + 1;
+            boolean armCalibration = gamepad1.x;
             double armDisplacement = 0;
             double armDisplacement2 = 0;
             double arm1Velocity;
             double arm2Velocity;
             boolean arm1RotateUp = gamepad1.dpad_up;
             boolean arm1RotateDown = gamepad1.dpad_down;
-            boolean arm2RotateUp = gamepad1.x;
-            boolean arm2RotateDown = gamepad1.b;
+            boolean arm2RotateUp = gamepad1.y;
+            boolean arm2RotateDown = gamepad1.a;
             if (arm1RotateUp) {
-                arm1Velocity = 0.5;
+                arm1Velocity = 0.5/ armPowerDecrease;
             } else if (arm1RotateDown){
-                arm1Velocity = -0.5;
+                arm1Velocity = -0.5/ armPowerDecrease;
             } else{
                 arm1Velocity = 0;
             }
             if (arm2RotateUp) {
-                arm2Velocity = 0.5;
+                arm2Velocity = 0.5 / armPowerDecrease;
             } else if (arm2RotateDown){
-                arm2Velocity = -0.5;
+                arm2Velocity = -0.5/armPowerDecrease;
             } else{
                 arm2Velocity = 0;
             }

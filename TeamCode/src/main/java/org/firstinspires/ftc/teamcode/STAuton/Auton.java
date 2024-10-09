@@ -5,9 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-import org.firstinspires.ftc.teamcode.robotParts_new.Arm_new;
-import org.firstinspires.ftc.teamcode.robotParts_new.Drivetrain_new;
-import org.firstinspires.ftc.teamcode.robotParts_new.Onderdelen_new;
+import org.firstinspires.ftc.teamcode.robotParts_new.All_Parts;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -18,9 +16,8 @@ public class Auton extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();                            //Slaat op hoe lang de robot is geinitialiseerd
 
 
-    Arm_new arm = new Arm_new();
-    Drivetrain_new train = new Drivetrain_new();
-    Onderdelen_new parts = new Onderdelen_new();                               //Roept de onderdelen aan uit de geïmporteerde map
+    private All_Parts parts;
+
 
     private DcMotorEx leftFront;
     private DcMotorEx rightFront;
@@ -47,12 +44,12 @@ public class Auton extends LinearOpMode {
     double fr = 0; //front right motor
     double bl = 0; //back left motor
     double br = 0; //back right motor
-    double pos_x = train.pos_x(); //x position
-    double pos_y = train.pos_y(); // y position
+    double pos_x = parts.motorPos()[1]; //x position
+    double pos_y = parts.motorPos()[3]; // y position
 
     @Override
     public void runOpMode() throws InterruptedException {
-        train.init(hardwareMap);
+        parts.init(hardwareMap);
         init(hardwareMap);
         waitForStart();
         while (opModeIsActive()) {
@@ -106,7 +103,7 @@ public class Auton extends LinearOpMode {
 
             //handle movement
             if (!manual) {
-                train.drive(vx, vy, va, 10);
+                parts.drive0(vx, vy, va, 10);
             } else if (hasInit) {
                 leftFront.setPower(fl / 1000);
                 rightFront.setPower(fr / 1000);

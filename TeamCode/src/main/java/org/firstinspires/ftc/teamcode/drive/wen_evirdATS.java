@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.robotParts_new.Arm_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Drivetrain_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Onderdelen_new;
 
-@TeleOp(name = "STAdrive_new", group = "TeleOp")
+@TeleOp(name = "STAdrive_new_reversed", group = "TeleOp")
 //Naam van project
 public class wen_evirdATS extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();                                //Slaat op hoe lang de robot is geinitialiseerd
@@ -34,8 +34,8 @@ public class wen_evirdATS extends LinearOpMode {
             double y = -gamepad1.left_stick_x;                       //Koppelt geactiveerde knop op controller aan variabele
             double x = gamepad1.left_stick_y;
             double rotate = -0.75 * gamepad1.right_stick_x;
-            double spinny = (-0.75 * gamepad2.left_stick_y);
-            double spinny_2 = (-0.75 * gamepad2.right_stick_y);
+            double spinny = (gamepad2.left_stick_y);
+            double spinny_2 = (gamepad2.right_stick_y);
             boolean armCalibration = gamepad2.x;
             double armDisplacement = 0;
             double armDisplacement2 = 0;
@@ -68,11 +68,11 @@ public class wen_evirdATS extends LinearOpMode {
             double armPos2 = arm2.getCurrentPos() - armDisplacement2;
 
             if (servo0_on) {
-                servopos += 0.003;
+                servopos += 0.03;
                 onderdelen.servo0(-servopos);
             } else if (servo0_off) {
                 if (servopos > 0) {
-                    servopos -= 0.003;
+                    servopos -= 0.03;
                 }
                 onderdelen.servo0(-servopos);
 
