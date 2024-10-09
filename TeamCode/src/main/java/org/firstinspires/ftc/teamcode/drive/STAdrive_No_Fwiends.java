@@ -52,9 +52,9 @@ public class STAdrive_No_Fwiends extends LinearOpMode {
                 arm1Velocity = 0;
             }
             if (arm2RotateUp) {
-                arm2Velocity = 0.5;
+                arm2Velocity = 1.0;
             } else if (arm2RotateDown){
-                arm2Velocity = -0.5;
+                arm2Velocity = -1.0;
             } else{
                 arm2Velocity = 0;
             }

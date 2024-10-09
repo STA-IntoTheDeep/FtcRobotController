@@ -9,7 +9,8 @@ import org.firstinspires.ftc.teamcode.robotParts_new.Arm_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Drivetrain_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Onderdelen_new;
 
-@TeleOp(name = "STAdrive_new",group = "TeleOp")                                     //Naam van project
+@TeleOp(name = "STAdrive_new", group = "TeleOp")
+//Naam van project
 public class wen_evirdATS extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();                                //Slaat op hoe lang de robot is geinitialiseerd
 
@@ -24,7 +25,7 @@ public class wen_evirdATS extends LinearOpMode {
         arm.initArm(hardwareMap);
         onderdelen.init(hardwareMap);
         arm2.initArm2(hardwareMap);
-        
+
         waitForStart();
         if (isStopRequested()) return;
         double servopos = 0;
@@ -32,16 +33,16 @@ public class wen_evirdATS extends LinearOpMode {
         while (opModeIsActive()) {                                  //Loop van het rijden van de robot
             double y = -gamepad1.left_stick_x;                       //Koppelt geactiveerde knop op controller aan variabele
             double x = gamepad1.left_stick_y;
-            double rotate = -0.75*gamepad1.right_stick_x;
-            double spinny = (-0.75*gamepad2.left_stick_y);
-            double spinny_2 = (-0.75*gamepad2.right_stick_y);
+            double rotate = -0.75 * gamepad1.right_stick_x;
+            double spinny = (-0.75 * gamepad2.left_stick_y);
+            double spinny_2 = (-0.75 * gamepad2.right_stick_y);
             boolean armCalibration = gamepad2.x;
             double armDisplacement = 0;
             double armDisplacement2 = 0;
 
             //Zet zin op het scherm
             //telemetry.addData("Verstreken tijd", getRuntime());     //Zet data op het scherm
-            telemetry.addData("armPos",arm.getCurrentPos());
+            telemetry.addData("armPos", arm.getCurrentPos());
             telemetry.update();
             //Zorgt dat data geüpdated blijft
             // max position arm is 7000
@@ -59,7 +60,7 @@ public class wen_evirdATS extends LinearOpMode {
             //Koppelt servobeweging aan variabele
             //boolean servo2grijpnaarbinnen = gamepad1.right_bumper;
             //boolean servo2grijpnaarbuiten = gamepad1.left_bumper;
-            if (armCalibration){
+            if (armCalibration) {
                 armDisplacement = arm.getCurrentPos();
                 armDisplacement2 = arm2.getCurrentPos();
             }
@@ -76,11 +77,11 @@ public class wen_evirdATS extends LinearOpMode {
                 onderdelen.servo0(-servopos);
 
             }
-            telemetry.addData("Servopos",servopos);
-            telemetry.addData("podpos_x",drivetrain.pos_x());
-            telemetry.addData("podpos_y",drivetrain.pos_y());
-            telemetry.addData("ArmPos",armPos);
-            telemetry.addData("ArmPos2",armPos2);
+            telemetry.addData("Servopos", servopos);
+            telemetry.addData("podpos_x", drivetrain.pos_x());
+            telemetry.addData("podpos_y", drivetrain.pos_y());
+            telemetry.addData("ArmPos", armPos);
+            telemetry.addData("ArmPos2", armPos2);
             /*if (servo2grijpnaarbinnen) {
                 onderdelen.servo2(0.85);
             } else if (servo2grijpnaarbuiten) {
@@ -95,10 +96,9 @@ public class wen_evirdATS extends LinearOpMode {
                 slides_movement = 0;
             }
             slides.slides_go_brr(slides_movement);
-        */}
-
-
+        */
+        }
 
 
     }
-    }
+}
