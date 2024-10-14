@@ -30,8 +30,7 @@ public class Drivetrain_new {
 
     //MotorX.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     public double pos_x() {
-        return rightFront.getCurrentPosition() - startup_x;
-
+        return -rightFront.getCurrentPosition() + startup_x;
     }
 
     public double pos_y() {

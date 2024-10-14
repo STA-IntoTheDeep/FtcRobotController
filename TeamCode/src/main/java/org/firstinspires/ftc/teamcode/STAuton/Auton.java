@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 import org.firstinspires.ftc.teamcode.robotParts_new.All_Parts;
+import org.firstinspires.ftc.teamcode.robotParts_new.Arm_new;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -13,79 +14,72 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 @Autonomous(name = "Autonomous", group = "Autonomous")
 //Naam van project
 public class Auton extends LinearOpMode {
-    private ElapsedTime runtime = new ElapsedTime();                            //Slaat op hoe lang de robot is geinitialiseerd
+    private ElapsedTime runtime = new ElapsedTime();
+    All_Parts parts = new All_Parts();
+    Arm_new arm = new Arm_new();
 
+    //Slaat op hoe lang de robot is geinitialiseerd
 
-    private All_Parts parts;
-
-
-    private DcMotorEx leftFront;
-    private DcMotorEx rightFront;
-    private DcMotorEx leftBack;
-    private DcMotorEx rightBack;
-
-    void init(HardwareMap map) {
-        leftFront = map.get(DcMotorEx.class, "left_front");
-        rightFront = map.get(DcMotorEx.class, "right_front");
-        leftBack = map.get(DcMotorEx.class, "left_back");
-        rightBack = map.get(DcMotorEx.class, "right_back");
-        hasInit = true;
-    }
+    double pos_y = 0;
+    //double armpos_small = 0;
 
     boolean autoEnabled = true;
     boolean manual = false;
     boolean hasInit = false;
 
-    double vx = 0; //velocity x
-    double vy = 0; //velocity y
+    double vy = 0; //velocity x
+    double vx = 0; //velocity y
     double va = 0; //angular velocity
 
     double fl = 0; //front left motor
     double fr = 0; //front right motor
     double bl = 0; //back left motor
     double br = 0; //back right motor
-    double pos_x = parts.motorPos()[1]; //x position
-    double pos_y = parts.motorPos()[3]; // y position
+    int stage = 0;
+    //double pos_x = parts.motorPos(hardwareMap)[1]; //x position
+    //double pos_y = parts.motorPos(hardwareMap)[3]; // y position
+
 
     @Override
     public void runOpMode() throws InterruptedException {
+        //All_Parts parts = null;
         parts.init(hardwareMap);
-        init(hardwareMap);
+        arm.initArm(hardwareMap);
+        double armPos1 = 0;
+        double startpos = -parts.posY();
+
         waitForStart();
         while (opModeIsActive()) {
+            pos_y = -parts.posY() - startpos;
+            armPos1 = parts.armPos()[1];
             telemetry.addData("autonomous mode enabled", autoEnabled);
             telemetry.addData("has initialized", hasInit);
-
             if (autoEnabled) {
                 double ms = runtime.milliseconds();
-                int stage = 0;
-                //int stage = (int) Math.round(ms / 3000) - 1;
+                //int stage = 0;
+                //int stage = (int) Math.round(ms / 3000) - 1; //required for async execution. dont remove
                 telemetry.addData("stage", stage);
+                telemetry.addData("Pos_y", pos_y);
+                telemetry.addData("armPos1", armPos1);
                 switch (stage) {
                     case 0:
-                        vx = 1;
-                        stage = 1;
+                        vy = 1;
+                        vx = 0;
+                        va = 0;
+                        if (pos_y > 41000){
+                            stage = 1;
+                        }
                         break;
                     case 1:
-                        vx = 0;
-                        va = 5;
-                        stage = 2;
-                        break;
-                    case 2:
-                        va = 0;
-                        vy = 5;
-                        stage = 3;
-                        break;
-                    case 3:
-                    case 4:
                         vy = 0;
-                        va = 5;
                         break;
+
+
                     default:
-                        vx = 0;
                         vy = 0;
+                        vx = 0;
                         va = 0;
-                        stage = 0;
+                        parts.servo0(0,0);
                         break;
                 }
 
@@ -103,13 +97,13 @@ public class Auton extends LinearOpMode {
 
             //handle movement
             if (!manual) {
-                parts.drive0(vx, vy, va, 10);
-            } else if (hasInit) {
+                parts.drive0(vy, vx, va, 3);
+            }/* else if (hasInit) {
                 leftFront.setPower(fl / 1000);
                 rightFront.setPower(fr / 1000);
                 rightBack.setPower(br / 1000);
                 leftBack.setPower(bl / 1000);
-            }
+            }*/
             telemetry.update();
         }
     }

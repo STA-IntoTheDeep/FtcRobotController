@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.robotParts_new.Onderdelen_new;
 
 @TeleOp(name = "STAdrive_new_reversed", group = "TeleOp")
 //Naam van project
-public class wen_evirdATS extends LinearOpMode {
+public class STA_drive_best extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();                                //Slaat op hoe lang de robot is geinitialiseerd
 
     Drivetrain_new drivetrain = new Drivetrain_new();
@@ -33,26 +33,30 @@ public class wen_evirdATS extends LinearOpMode {
         while (opModeIsActive()) {                                  //Loop van het rijden van de robot
             double y = -gamepad1.left_stick_x;                       //Koppelt geactiveerde knop op controller aan variabele
             double x = gamepad1.left_stick_y;
-            double rotate = -0.75 * gamepad1.right_stick_x;
-            double spinny = (gamepad2.left_stick_y);
-            double spinny_2 = (gamepad2.right_stick_y);
+            double rotate = 0.6 * gamepad1.right_stick_x;
+            double arm1Velocity = -0.8 * gamepad2.left_stick_y;
+            double arm2Velocity = 0.6 * gamepad2.right_stick_y;
             boolean armCalibration = gamepad2.x;
             double armDisplacement = 0;
             double armDisplacement2 = 0;
-
+            boolean armFasterMovement = gamepad2.y;
+            if (armFasterMovement){
+                arm1Velocity *= 2;
+                arm2Velocity *= 2;
+            }
             //Zet zin op het scherm
             //telemetry.addData("Verstreken tijd", getRuntime());     //Zet data op het scherm
             telemetry.addData("armPos", arm.getCurrentPos());
-            telemetry.update();
+
             //Zorgt dat data geüpdated blijft
             // max position arm is 7000
             // min position arm is 2738
 
-            double speed = 3 * gamepad1.right_trigger + 1;
+            double speed = -3 * gamepad1.right_trigger + 4;
 
             drivetrain.drive(-x, -y, -rotate, speed);                         //Voert bij drivetrain aangemaakte opdracht uit
-            arm.rotate(spinny);
-            arm2.rotate2(spinny_2);
+            arm.rotate(arm1Velocity);
+            arm2.rotate2(arm2Velocity);
 
             boolean servo0_on = gamepad2.left_bumper;                         //Koppelt servobeweging aan variabele
             boolean servo0_off = gamepad2.right_bumper;
@@ -68,13 +72,15 @@ public class wen_evirdATS extends LinearOpMode {
             double armPos2 = arm2.getCurrentPos() - armDisplacement2;
 
             if (servo0_on) {
-                servopos += 0.03;
-                onderdelen.servo0(-servopos);
+                if (servopos<1){
+                    servopos += 0.03;
+                }
+                onderdelen.servo0(servopos);
             } else if (servo0_off) {
                 if (servopos > 0) {
                     servopos -= 0.03;
                 }
-                onderdelen.servo0(-servopos);
+                onderdelen.servo0(servopos);
 
             }
             telemetry.addData("Servopos", servopos);
@@ -82,6 +88,9 @@ public class wen_evirdATS extends LinearOpMode {
             telemetry.addData("podpos_y", drivetrain.pos_y());
             telemetry.addData("ArmPos", armPos);
             telemetry.addData("ArmPos2", armPos2);
+            telemetry.addData("ArmPos without offset",arm.getCurrentPos());
+            telemetry.addData("ArmPos2 without offset",arm2.getCurrentPos());
+            telemetry.update();
             /*if (servo2grijpnaarbinnen) {
                 onderdelen.servo2(0.85);
             } else if (servo2grijpnaarbuiten) {

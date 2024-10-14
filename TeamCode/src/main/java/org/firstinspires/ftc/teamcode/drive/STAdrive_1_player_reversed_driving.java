@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.drive;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -9,7 +10,7 @@ import org.firstinspires.ftc.teamcode.robotParts_new.Arm_Two_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Arm_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Drivetrain_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Onderdelen_new;
-
+@Disabled
 @TeleOp(name = "STAdrive_1_player_reversed_driving",group = "TeleOp")                                     //Naam van project
 public class STAdrive_1_player_reversed_driving extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();                                //Slaat op hoe lang de robot is geinitialiseerd
@@ -33,33 +34,41 @@ public class STAdrive_1_player_reversed_driving extends LinearOpMode {
         if (isStopRequested()) return;
         double servopos = 0;
 
+        double armDisplacement = arm.getCurrentPos();
+        double armDisplacement2 = arm2.getCurrentPos();
+
         while (opModeIsActive()) {                                  //Loop van het rijden van de robot
             double y = -gamepad1.left_stick_x;                       //Koppelt geactiveerde knop op controller aan variabele
             double x = gamepad1.left_stick_y;
-            double rotate = -0.75 * gamepad1.right_stick_x;
+            double rotate = 0.6 * gamepad1.right_stick_x;
             double armPowerDecrease = 3*gamepad1.left_trigger + 1;
             boolean armCalibration = gamepad1.x;
-            double armDisplacement = 0;
-            double armDisplacement2 = 0;
             double arm1Velocity;
             double arm2Velocity;
             boolean arm1RotateUp = gamepad1.dpad_up;
             boolean arm1RotateDown = gamepad1.dpad_down;
-            boolean arm2RotateUp = gamepad1.y;
-            boolean arm2RotateDown = gamepad1.a;
-            if (arm1RotateUp) {
-                arm1Velocity = 0.5/ armPowerDecrease;
-            } else if (arm1RotateDown){
-                arm1Velocity = -0.5/ armPowerDecrease;
-            } else{
-                arm1Velocity = 0;
-            }
+            boolean arm2RotateUp = gamepad1.dpad_right;
+            boolean arm2RotateDown = gamepad1.dpad_left;
+            boolean arm2TurnWithArm1 = gamepad1.b;
             if (arm2RotateUp) {
                 arm2Velocity = 0.5 / armPowerDecrease;
             } else if (arm2RotateDown){
                 arm2Velocity = -0.5/armPowerDecrease;
             } else{
                 arm2Velocity = 0;
+            }
+            if (arm1RotateUp) {
+                arm1Velocity = 0.5/ armPowerDecrease;
+                if (arm2TurnWithArm1){
+                    arm2Velocity = -0.25 / armPowerDecrease;
+                }
+            } else if (arm1RotateDown){
+                arm1Velocity = -0.5/ armPowerDecrease;
+                if (arm2TurnWithArm1){
+                    arm2Velocity = -0.25 / armPowerDecrease;
+                }
+            } else{
+                arm1Velocity = 0;
             }
             /*if (rotate != 0) {
                 telemetry.addLine("chippi chippi chappa chappa");                       //dont question it
@@ -108,6 +117,8 @@ public class STAdrive_1_player_reversed_driving extends LinearOpMode {
             telemetry.addData("Servopos",servopos);
             telemetry.addData("ArmPos",armPos);
             telemetry.addData("ArmPos2",armPos2);
+            telemetry.addData("ArmPos without offset",arm.getCurrentPos());
+            telemetry.addData("ArmPos2 without offset",arm2.getCurrentPos());
             telemetry.addData("podpos_x",drivetrain.pos_x());
             telemetry.addData("podpos_y",drivetrain.pos_y());
             /*if (servo2grijpnaarbinnen) {

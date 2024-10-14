@@ -12,17 +12,18 @@ class partcount {
 
 public class All_Parts {
 
-    private Servo[] servo;
+    private Servo servo0;
     private DcMotorEx lf;
     private DcMotorEx rf;
     private DcMotorEx lb;
     private DcMotorEx rb;
     private DcMotorEx arm;
     private DcMotorEx arm2;
-    partcount c;
+    partcount c = new partcount();
+    Servo[] servo = {servo0};
 
     public void init(HardwareMap map) {
-        for (int a = 0; a < c.servos; a++) {
+        for (int a = 0; a <= (c.servos-1); a++) {
             servo[a] = map.get(Servo.class, "servo" + a);
         }
         lf = map.get(DcMotorEx.class, "left_front");
@@ -31,6 +32,10 @@ public class All_Parts {
         rb = map.get(DcMotorEx.class, "right_back");
         arm = map.get(DcMotorEx.class, "arm");
         arm2 = map.get(DcMotorEx.class, "arm");
+        rf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         arm2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -49,21 +54,11 @@ public class All_Parts {
         return new int[]{arm.getCurrentPosition(), arm2.getCurrentPosition()};
     }
 
-    public int[] motorPos() {
-        int[] p = {
-                lf.getCurrentPosition(),
-                rf.getCurrentPosition(),
-                lb.getCurrentPosition(),
-                rb.getCurrentPosition()
-        };
-
-        long total = 0;
-        for (int e : p) {
-            total += e;
-        }
-        p[4] = Math.toIntExact(total / 4);
-
-        return p;
+    public int posY(){
+        return rb.getCurrentPosition();
+    }
+    public int posX(){
+        return rf.getCurrentPosition();
     }
 
     public void drive0(double forward, double right, double rotate, double power) {

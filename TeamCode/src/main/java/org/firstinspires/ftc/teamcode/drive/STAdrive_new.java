@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.drive;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -8,7 +9,7 @@ import org.firstinspires.ftc.teamcode.robotParts_new.Arm_Two_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Drivetrain_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Arm_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Onderdelen_new;
-
+@Disabled
 @TeleOp(name = "STAdrive_new",group = "TeleOp")                                     //Naam van project
 public class STAdrive_new extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();                                //Slaat op hoe lang de robot is geinitialiseerd
@@ -32,9 +33,9 @@ public class STAdrive_new extends LinearOpMode {
         while (opModeIsActive()) {                                  //Loop van het rijden van de robot
             double y = -gamepad1.left_stick_x;                       //Koppelt geactiveerde knop op controller aan variabele
             double x = gamepad1.left_stick_y;
-            double rotate = -0.75*gamepad1.right_stick_x;
-            double arm1Velocity = (-0.75*gamepad2.left_stick_y);
-            double arm2Velocity = (-0.75*gamepad2.right_stick_y);
+            double rotate = -0.6*gamepad1.right_stick_x;
+            double arm1Velocity = -0.5*gamepad2.left_stick_y;
+            double arm2Velocity = 0.5*gamepad2.right_stick_y;
             boolean armCalibration = gamepad2.x;
             double armDisplacement = 0;
             double armDisplacement2 = 0;
@@ -47,7 +48,7 @@ public class STAdrive_new extends LinearOpMode {
             // max position arm is 7000
             // min position arm is 2738
 
-            double speed = 3 * gamepad1.right_trigger + 1;
+            double speed = -3 * gamepad1.right_trigger + 4;
 
             drivetrain.drive(x, y, rotate, speed);                         //Voert bij drivetrain aangemaakte opdracht uit
             arm.rotate(arm1Velocity);
