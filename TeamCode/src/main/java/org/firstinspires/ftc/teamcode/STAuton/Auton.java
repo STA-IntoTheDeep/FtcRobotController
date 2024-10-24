@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Auton extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     All_Parts parts = new All_Parts();
-    Arm_new arm = new Arm_new();
+    Arm_new arm1 = new Arm_new();
 
     //Slaat op hoe lang de robot is geinitialiseerd
 
@@ -35,7 +35,8 @@ public class Auton extends LinearOpMode {
     double fr = 0; //front right motor
     double bl = 0; //back left motor
     double br = 0; //back right motor
-    int stage = 0;
+    String stage = "init complete";
+    double armPos1;
     //double pos_x = parts.motorPos(hardwareMap)[1]; //x position
     //double pos_y = parts.motorPos(hardwareMap)[3]; // y position
 
@@ -44,14 +45,13 @@ public class Auton extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         //All_Parts parts = null;
         parts.init(hardwareMap);
-        arm.initArm(hardwareMap);
-        double armPos1 = 0;
+        arm1.initArm(hardwareMap);
         double startpos = -parts.posY();
 
         waitForStart();
         while (opModeIsActive()) {
             pos_y = -parts.posY() - startpos;
-            armPos1 = parts.armPos()[1];
+            armPos1 = parts.armPos()[0];
             telemetry.addData("autonomous mode enabled", autoEnabled);
             telemetry.addData("has initialized", hasInit);
             if (autoEnabled) {
@@ -62,16 +62,24 @@ public class Auton extends LinearOpMode {
                 telemetry.addData("Pos_y", pos_y);
                 telemetry.addData("armPos1", armPos1);
                 switch (stage) {
-                    case 0:
+                    case "init complete":
+                        vy = 0;
+                        vx = 0;
+                        va = 0;
+                        arm1.rotate(-0.6);
+                        if (armPos1 >= 1600){
+                            stage = "arm configuration complete";
+                        }
+                        break;
+
+                    case "arm configuration complete":
+                        arm1.rotate(0);
                         vy = 1;
                         vx = 0;
                         va = 0;
-                        if (pos_y > 41000){
-                            stage = 1;
+                        if (pos_y > 36000){
+                            stage = "arrived at submersible";
                         }
-                        break;
-                    case 1:
-                        vy = 0;
                         break;
 
 
@@ -79,6 +87,7 @@ public class Auton extends LinearOpMode {
                         vy = 0;
                         vx = 0;
                         va = 0;
+                        arm1.rotate(0);
                         parts.servo0(0,0);
                         break;
                 }

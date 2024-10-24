@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.robotParts_new.All_Parts;
 import org.firstinspires.ftc.teamcode.robotParts_new.Arm_Two_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Arm_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Drivetrain_new;
@@ -17,7 +18,8 @@ public class STA_drive_best extends LinearOpMode {
     Drivetrain_new drivetrain = new Drivetrain_new();
     Arm_new arm = new Arm_new();
     Arm_Two_new arm2 = new Arm_Two_new();
-    Onderdelen_new onderdelen = new Onderdelen_new();                               //Roept de onderdelen aan uit de geïmporteerde map
+    Onderdelen_new onderdelen = new Onderdelen_new();
+    All_Parts parts = new All_Parts();                                      //Roept de onderdelen aan uit de geïmporteerde map
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -46,13 +48,13 @@ public class STA_drive_best extends LinearOpMode {
             }
             //Zet zin op het scherm
             //telemetry.addData("Verstreken tijd", getRuntime());     //Zet data op het scherm
-            telemetry.addData("armPos", arm.getCurrentPos());
+            //telemetry.addData("armPos", arm.getCurrentPos());
 
             //Zorgt dat data geüpdated blijft
             // max position arm is 7000
             // min position arm is 2738
 
-            double speed = -3 * gamepad1.right_trigger + 4;
+            double speed = -2 * gamepad1.right_trigger + 3;
 
             drivetrain.drive(-x, -y, -rotate, speed);                         //Voert bij drivetrain aangemaakte opdracht uit
             arm.rotate(arm1Velocity);
