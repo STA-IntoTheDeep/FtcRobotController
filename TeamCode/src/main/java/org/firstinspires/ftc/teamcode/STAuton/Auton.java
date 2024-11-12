@@ -15,8 +15,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 //Naam van project
 public class Auton extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
-    All_Parts parts = new All_Parts();
-    Arm_new arm1 = new Arm_new();
 
     //Slaat op hoe lang de robot is geinitialiseerd
 
@@ -44,14 +42,10 @@ public class Auton extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         //All_Parts parts = null;
-        parts.init(hardwareMap);
-        arm1.initArm(hardwareMap);
-        double startpos = -parts.posY();
+       All_Parts parts = new All_Parts();
 
         waitForStart();
         while (opModeIsActive()) {
-            pos_y = -parts.posY() - startpos;
-            armPos1 = parts.armPos()[0];
             telemetry.addData("autonomous mode enabled", autoEnabled);
             telemetry.addData("has initialized", hasInit);
             if (autoEnabled) {
@@ -66,19 +60,8 @@ public class Auton extends LinearOpMode {
                         vy = 0;
                         vx = 0;
                         va = 0;
-                        arm1.rotate(-0.6);
                         if (armPos1 >= 1600){
                             stage = "arm configuration complete";
-                        }
-                        break;
-
-                    case "arm configuration complete":
-                        arm1.rotate(0);
-                        vy = 1;
-                        vx = 0;
-                        va = 0;
-                        if (pos_y > 36000){
-                            stage = "arrived at submersible";
                         }
                         break;
 
@@ -87,8 +70,6 @@ public class Auton extends LinearOpMode {
                         vy = 0;
                         vx = 0;
                         va = 0;
-                        arm1.rotate(0);
-                        parts.servo0(0,0);
                         break;
                 }
 
