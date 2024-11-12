@@ -19,7 +19,6 @@ public class Auton extends LinearOpMode {
     //Slaat op hoe lang de robot is geinitialiseerd
 
     double pos_y = 0;
-    //double armpos_small = 0;
 
     boolean autoEnabled = true;
     boolean manual = false;
@@ -34,7 +33,6 @@ public class Auton extends LinearOpMode {
     double bl = 0; //back left motor
     double br = 0; //back right motor
     String stage = "init complete";
-    double armPos1;
     //double pos_x = parts.motorPos(hardwareMap)[1]; //x position
     //double pos_y = parts.motorPos(hardwareMap)[3]; // y position
 
@@ -43,7 +41,7 @@ public class Auton extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         //All_Parts parts = null;
        All_Parts parts = new All_Parts();
-
+       parts.init(hardwareMap);
         waitForStart();
         while (opModeIsActive()) {
             telemetry.addData("autonomous mode enabled", autoEnabled);
@@ -54,17 +52,17 @@ public class Auton extends LinearOpMode {
                 //int stage = (int) Math.round(ms / 3000) - 1; //required for async execution. dont remove
                 telemetry.addData("stage", stage);
                 telemetry.addData("Pos_y", pos_y);
-                telemetry.addData("armPos1", armPos1);
                 switch (stage) {
                     case "init complete":
                         vy = 0;
                         vx = 0;
                         va = 0;
-                        if (armPos1 >= 1600){
-                            stage = "arm configuration complete";
-                        }
+                            stage = "ReadyToStart";
                         break;
 
+                    case "ReadyToStart":
+                        vy = 1;
+                        break;
 
                     default:
                         vy = 0;
