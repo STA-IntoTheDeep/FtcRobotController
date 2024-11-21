@@ -35,7 +35,7 @@ public class STA_drive_test extends LinearOpMode {
 
         while (opModeIsActive()) {                                  //Loop van het rijden van de robot
           servopower = gamepad1.left_stick_y;
-          onderdelen.servo1(servopower);
+          //onderdelen.servo1(servopower);
             /*if (servo2grijpnaarbinnen) {
                 onderdelen.servo2(0.85);
             } else if (servo2grijpnaarbuiten) {

@@ -5,6 +5,9 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+
+import com.qualcomm.robotcore.hardware.CRServo;
+
 class partcount {
     int servos = 1;
 }
@@ -19,6 +22,9 @@ public class All_Parts {
     private DcMotorEx rb;
     //private DcMotorEx arm;
     //private DcMotorEx arm2;
+    private CRServo rollerintake;
+    private Servo sampleBakje;
+
     partcount c = new partcount();
     Servo[] servo = {servo0};
 
@@ -28,6 +34,8 @@ public class All_Parts {
             servo[a] = map.get(Servo.class, "servo" + a);
         }
          */
+        rollerintake = map.get(CRServo.class, "intake");
+        sampleBakje = map.get(Servo.class, "bakje");
         lf = map.get(DcMotorEx.class, "left_front");
         rf = map.get(DcMotorEx.class, "right_front");
         lb = map.get(DcMotorEx.class, "left_back");
@@ -88,6 +96,15 @@ public class All_Parts {
         rf.setPower(fr / weight);
         rb.setPower(br / weight);
         lb.setPower(bl / weight);
+    }
+
+
+    public void rollerIntake(double power) {
+        rollerintake.setPower(power);
+    }
+
+    public void sampleBakje(double pos){
+        sampleBakje.setPosition(pos);
     }
 }
 

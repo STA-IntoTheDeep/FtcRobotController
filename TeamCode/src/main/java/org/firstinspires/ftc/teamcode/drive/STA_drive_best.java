@@ -24,19 +24,31 @@ public class STA_drive_best extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         drivetrain.init(hardwareMap);
+        parts.init(hardwareMap);
         //arm.initArm(hardwareMap);
         //onderdelen.init(hardwareMap);
         //arm2.initArm2(hardwareMap);
 
         waitForStart();
         if (isStopRequested()) return;
-        //double servopos = 0;
+        double servopos = 0;
 
         while (opModeIsActive()) {                                  //Loop van het rijden van de robot
             double y = -gamepad1.left_stick_x;                       //Koppelt geactiveerde knop op controller aan variabele
             double x = gamepad1.left_stick_y;
             double rotate = 0.6 * gamepad1.right_stick_x;
             drivetrain.drive(-x, -y, -rotate, 1);
+
+            parts.rollerIntake(gamepad1.right_trigger);
+
+            if (gamepad1.dpad_up){
+               servopos += 3;
+            } else if(gamepad1.dpad_down){
+                servopos -= 3;
+            }
+
+            parts.sampleBakje(servopos);
+
             /*
             double arm1Velocity = -0.8 * gamepad2.left_stick_y;
             double arm2Velocity = 0.6 * gamepad2.right_stick_y;
