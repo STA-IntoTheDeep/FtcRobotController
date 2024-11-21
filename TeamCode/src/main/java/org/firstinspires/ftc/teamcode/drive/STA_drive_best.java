@@ -23,21 +23,21 @@ public class STA_drive_best extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        //inits
         drivetrain.init(hardwareMap);
-        arm.initArm(hardwareMap);
-        onderdelen.init(hardwareMap);
-        arm2.initArm2(hardwareMap);
+        //arm.initArm(hardwareMap);
+        //onderdelen.init(hardwareMap);
+        //arm2.initArm2(hardwareMap);
 
-        //wait until "start" is clicked and run until "stop" is clicked
         waitForStart();
         if (isStopRequested()) return;
-        double servoPower = 0;
+        //double servopos = 0;
 
         while (opModeIsActive()) {                                  //Loop van het rijden van de robot
             double y = -gamepad1.left_stick_x;                       //Koppelt geactiveerde knop op controller aan variabele
             double x = gamepad1.left_stick_y;
             double rotate = 0.6 * gamepad1.right_stick_x;
+            drivetrain.drive(-x, -y, -rotate, 1);
+            /*
             double arm1Velocity = -0.8 * gamepad2.left_stick_y;
             double arm2Velocity = 0.6 * gamepad2.right_stick_y;
             boolean armCalibration = gamepad2.x;
@@ -55,6 +55,19 @@ public class STA_drive_best extends LinearOpMode {
             //Zorgt dat data geüpdated blijft
             // max position arm is 7000
             // min position arm is 2738
+
+            double speed = -2 * gamepad1.right_trigger + 3;
+
+                                     //Voert bij drivetrain aangemaakte opdracht uit
+            arm.rotate(arm1Velocity);
+            arm2.rotate2(arm2Velocity);
+
+            boolean servo0_on = gamepad2.left_bumper;                         //Koppelt servobeweging aan variabele
+            boolean servo0_off = gamepad2.right_bumper;
+
+            //Koppelt servobeweging aan variabele
+            //boolean servo2grijpnaarbinnen = gamepad1.right_bumper;
+            //boolean servo2grijpnaarbuiten = gamepad1.left_bumper;
             if (armCalibration) {
                 armDisplacement = arm.getCurrentPos();
                 armDisplacement2 = arm2.getCurrentPos();
@@ -62,27 +75,19 @@ public class STA_drive_best extends LinearOpMode {
             double armPos = arm.getCurrentPos() - armDisplacement;
             double armPos2 = arm2.getCurrentPos() - armDisplacement2;
 
-            double speed = -2 * gamepad1.right_trigger + 3;
+            if (servo0_on) {
+                if (servopos<1){
+                    servopos += 0.03;
+                }
+                onderdelen.servo0(servopos);
+            } else if (servo0_off) {
+                if (servopos > 0) {
+                    servopos -= 0.03;
+                }
+                onderdelen.servo0(servopos);
 
-            drivetrain.drive(-x, -y, -rotate, speed); //Voert bij drivetrain aangemaakte opdracht uit
-
-
-            //if (armPos < /*maxwaarde*/ && arm1Velocity <= 0.0){
-                arm.rotate(arm1Velocity);
-            //}
-
-            arm2.rotate2(arm2Velocity);
-
-
-            if (gamepad2.right_bumper) {
-                servoPower = 1;
-            } else if (gamepad2.left_bumper) {
-                servoPower = -1;
-            } else {
-                servoPower = 0;
             }
-            onderdelen.servo0(servoPower);
-
+            telemetry.addData("Servopos", servopos);
             telemetry.addData("podpos_x", drivetrain.pos_x());
             telemetry.addData("podpos_y", drivetrain.pos_y());
             telemetry.addData("ArmPos", armPos);
@@ -105,6 +110,7 @@ public class STA_drive_best extends LinearOpMode {
             }
             slides.slides_go_brr(slides_movement);
         */
+
         }
 
 
