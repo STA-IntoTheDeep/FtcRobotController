@@ -31,7 +31,7 @@ public class STA_drive_best extends LinearOpMode {
 
         waitForStart();
         if (isStopRequested()) return;
-        double servopos = 0;
+        double bakjeServoPos = 0;
 
         while (opModeIsActive()) {                                  //Loop van het rijden van de robot
             double y = -gamepad1.left_stick_x;                       //Koppelt geactiveerde knop op controller aan variabele
@@ -42,12 +42,12 @@ public class STA_drive_best extends LinearOpMode {
             parts.rollerIntake(gamepad1.right_trigger);
 
             if (gamepad1.dpad_up){
-               servopos += 3;
+               bakjeServoPos = 1;
             } else if(gamepad1.dpad_down){
-                servopos -= 3;
+                bakjeServoPos = 0;
             }
 
-            parts.sampleBakje(servopos);
+            parts.sampleBakje(bakjeServoPos);
 
             /*
             double arm1Velocity = -0.8 * gamepad2.left_stick_y;
@@ -88,18 +88,18 @@ public class STA_drive_best extends LinearOpMode {
             double armPos2 = arm2.getCurrentPos() - armDisplacement2;
 
             if (servo0_on) {
-                if (servopos<1){
-                    servopos += 0.03;
+                if (bakjeServoPos<1){
+                    bakjeServoPos += 0.03;
                 }
-                onderdelen.servo0(servopos);
+                onderdelen.servo0(bakjeServoPos);
             } else if (servo0_off) {
-                if (servopos > 0) {
-                    servopos -= 0.03;
+                if (bakjeServoPos > 0) {
+                    bakjeServoPos -= 0.03;
                 }
-                onderdelen.servo0(servopos);
+                onderdelen.servo0(bakjeServoPos);
 
             }
-            telemetry.addData("Servopos", servopos);
+            telemetry.addData("Servopos", bakjeServoPos);
             telemetry.addData("podpos_x", drivetrain.pos_x());
             telemetry.addData("podpos_y", drivetrain.pos_y());
             telemetry.addData("ArmPos", armPos);
