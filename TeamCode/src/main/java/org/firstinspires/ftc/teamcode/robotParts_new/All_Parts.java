@@ -20,6 +20,8 @@ public class All_Parts {
     private DcMotorEx rf;
     private DcMotorEx lb;
     private DcMotorEx rb;
+    private DcMotorEx slides;
+    private DcMotorEx arm;
     //private DcMotorEx arm;
     //private DcMotorEx arm2;
     private CRServo rollerintake;
@@ -34,18 +36,21 @@ public class All_Parts {
             servo[a] = map.get(Servo.class, "servo" + a);
         }
          */
+        slides = map.get(DcMotorEx.class,"slides");
         rollerintake = map.get(CRServo.class, "intake");
         sampleBakje = map.get(Servo.class, "bakje");
         lf = map.get(DcMotorEx.class, "left_front");
         rf = map.get(DcMotorEx.class, "right_front");
         lb = map.get(DcMotorEx.class, "left_back");
         rb = map.get(DcMotorEx.class, "right_back");
-        //arm = map.get(DcMotorEx.class, "arm");
-        //arm2 = map.get(DcMotorEx.class, "arm");
+        arm = map.get(DcMotorEx.class, "arm");
+
         rf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //arm2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -105,6 +110,14 @@ public class All_Parts {
 
     public void sampleBakje(double pos){
         sampleBakje.setPosition(pos);
+    }
+
+    public void setSlidesPower(double power){
+        slides.setPower(power);
+    }
+
+    public void setArmPower(double power){
+        arm.setPower(power);
     }
 }
 

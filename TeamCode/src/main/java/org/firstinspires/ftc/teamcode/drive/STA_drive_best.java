@@ -39,15 +39,18 @@ public class STA_drive_best extends LinearOpMode {
             double rotate = 0.6 * gamepad1.right_stick_x;
             drivetrain.drive(-x, -y, -rotate, 1);
 
-            parts.rollerIntake(gamepad1.right_trigger);
+            parts.rollerIntake((gamepad2.right_trigger * 1.5) - (gamepad2.left_trigger * 1.5));
 
-            if (gamepad1.dpad_up){
+            if (gamepad2.left_bumper){
                bakjeServoPos = 1;
-            } else if(gamepad1.dpad_down){
+            } else if(gamepad2.right_bumper){
                 bakjeServoPos = 0;
             }
-
             parts.sampleBakje(bakjeServoPos);
+
+            parts.setSlidesPower(gamepad2.right_stick_y / 3);
+
+            parts.setArmPower(gamepad2.left_stick_y / 3);
 
             /*
             double arm1Velocity = -0.8 * gamepad2.left_stick_y;
