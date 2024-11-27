@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.robotParts_new.Arm_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Drivetrain_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Onderdelen_new;
 
-@TeleOp(name = "STAdrive_new_reversed", group = "TeleOp")
+@TeleOp(name = "STAdrive_best", group = "TeleOp")
 //Naam van project
 public class STA_drive_best extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();                                //Slaat op hoe lang de robot is geinitialiseerd
@@ -28,30 +28,43 @@ public class STA_drive_best extends LinearOpMode {
         //arm.initArm(hardwareMap);
         //onderdelen.init(hardwareMap);
         //arm2.initArm2(hardwareMap);
+        double ms;
 
         waitForStart();
         if (isStopRequested()) return;
-        double bakjeServoPos = 0;
-
+        double bakjeServoPos = 1;
+        ms = runtime.milliseconds();
         while (opModeIsActive()) {                                  //Loop van het rijden van de robot
             double y = -gamepad1.left_stick_x;                       //Koppelt geactiveerde knop op controller aan variabele
             double x = gamepad1.left_stick_y;
             double rotate = 0.6 * gamepad1.right_stick_x;
-            drivetrain.drive(-x, -y, -rotate, 1);
+            double speed = 4 - 3 * gamepad1.right_trigger;
+            drivetrain.drive(-x, -y, -rotate, speed);
 
             parts.rollerIntake((gamepad2.right_trigger * 1.5) - (gamepad2.left_trigger * 1.5));
-
             if (gamepad2.left_bumper){
-               bakjeServoPos = 1;
-            } else if(gamepad2.right_bumper){
-                bakjeServoPos = 0;
+                if (bakjeServoPos == 1){
+                bakjeServoPos =0;}
+                else{bakjeServoPos = 0;}
             }
+            /*if (gamepad2.left_bumper) {
+                bakjeServoPos = 1;
+            } else if (gamepad2.right_bumper) {
+                bakjeServoPos = 0;
+            }*/
             parts.sampleBakje(bakjeServoPos);
 
-            parts.setSlidesPower(gamepad2.right_stick_y / 3);
+            parts.setArmPower(gamepad2.left_stick_y);
 
-            parts.setArmPower(gamepad2.left_stick_y / 3);
+            double slidespower = gamepad2.right_stick_y;
 
+            if (((parts.getSlidesPos() <= 100) || (slidespower <= 0)) && ((parts.getSlidesPos() >= 0) || (slidespower >= 0))){
+                parts.setSlidesPower(slidespower);
+            }
+
+
+            telemetry.addData("slidesPos", parts.getSlidesPos());
+            telemetry.update();
             /*
             double arm1Velocity = -0.8 * gamepad2.left_stick_y;
             double arm2Velocity = 0.6 * gamepad2.right_stick_y;

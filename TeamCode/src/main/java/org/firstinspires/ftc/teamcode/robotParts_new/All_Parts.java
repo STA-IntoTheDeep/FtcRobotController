@@ -1,12 +1,10 @@
 package org.firstinspires.ftc.teamcode.robotParts_new;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-
-
-import com.qualcomm.robotcore.hardware.CRServo;
 
 class partcount {
     int servos = 1;
@@ -36,7 +34,7 @@ public class All_Parts {
             servo[a] = map.get(Servo.class, "servo" + a);
         }
          */
-        slides = map.get(DcMotorEx.class,"slides");
+        slides = map.get(DcMotorEx.class, "slides");
         rollerintake = map.get(CRServo.class, "intake");
         sampleBakje = map.get(Servo.class, "bakje");
         lf = map.get(DcMotorEx.class, "left_front");
@@ -71,16 +69,17 @@ public class All_Parts {
     }
      */
 
-    public int posY(){
+    public int posY() {
         return rb.getCurrentPosition();
     }
-    public int posX(){
+
+    public int posX() {
         return rf.getCurrentPosition();
     }
 
     public void drive0(double forward, double right, double rotate, double power) {
-            double leftFrontPower = -forward - right + rotate;
-            double rightFrontPower = -forward + right - rotate;
+        double leftFrontPower = -forward - right + rotate;
+        double rightFrontPower = -forward + right - rotate;
         double rightRearPower = -forward - right - rotate;
         double leftRearPower = -forward + right + rotate;
         double maxPower = power;
@@ -108,16 +107,21 @@ public class All_Parts {
         rollerintake.setPower(power);
     }
 
-    public void sampleBakje(double pos){
+    public void sampleBakje(double pos) {
         sampleBakje.setPosition(pos);
     }
 
-    public void setSlidesPower(double power){
+    public void setSlidesPower(double power) {
         slides.setPower(power);
     }
 
-    public void setArmPower(double power){
+    public void setArmPower(double power) {
         arm.setPower(power);
     }
+
+    public int getSlidesPos(){
+        return slides.getCurrentPosition();
+    }
 }
+
 
