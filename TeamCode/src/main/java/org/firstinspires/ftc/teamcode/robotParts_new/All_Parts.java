@@ -22,8 +22,12 @@ public class All_Parts {
     private DcMotorEx arm;
     //private DcMotorEx arm;
     //private DcMotorEx arm2;
-    private CRServo rollerintake;
+    //private CRServo rollerintake;
     private Servo sampleBakje;
+    private Servo intakeClaw;
+    private Servo servoRotation;
+    private Servo intakeOrientation;
+    int slidePosDisplacement;
 
     partcount c = new partcount();
     Servo[] servo = {servo0};
@@ -35,8 +39,11 @@ public class All_Parts {
         }
          */
         slides = map.get(DcMotorEx.class, "slides");
-        rollerintake = map.get(CRServo.class, "intake");
+        //rollerintake = map.get(CRServo.class, "intake");
         sampleBakje = map.get(Servo.class, "bakje");
+        intakeClaw = map.get(Servo.class, "Claw");
+        intakeOrientation = map.get(Servo.class,"intakeTurn");
+        servoRotation = map.get(Servo.class, "servoRotation");
         lf = map.get(DcMotorEx.class, "left_front");
         rf = map.get(DcMotorEx.class, "right_front");
         lb = map.get(DcMotorEx.class, "left_back");
@@ -49,7 +56,7 @@ public class All_Parts {
         lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+        slidePosDisplacement = slides.getCurrentPosition();
         //arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //arm2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
@@ -76,7 +83,7 @@ public class All_Parts {
     public int posX() {
         return rf.getCurrentPosition();
     }
-
+    public int posY2(){return lb.getCurrentPosition();}
     public void drive0(double forward, double right, double rotate, double power) {
         double leftFrontPower = -forward - right + rotate;
         double rightFrontPower = -forward + right - rotate;
@@ -103,14 +110,16 @@ public class All_Parts {
     }
 
 
-    public void rollerIntake(double power) {
+    /*public void rollerIntake(double power) {
         rollerintake.setPower(power);
-    }
+    }*/
 
-    public void sampleBakje(double pos) {
-        sampleBakje.setPosition(pos);
-    }
+    public void sampleBakje(double pos) {sampleBakje.setPosition(pos);}
 
+    public void intakeClaw(double pos) {intakeClaw.setPosition(pos);}
+
+    public void servoRotation(double pos) {servoRotation.setPosition(pos);}
+    public void setIntakeOrientation(double pos) {intakeOrientation.setPosition(pos);}
     public void setSlidesPower(double power) {
         slides.setPower(power);
     }
@@ -120,7 +129,7 @@ public class All_Parts {
     }
 
     public int getSlidesPos(){
-        return slides.getCurrentPosition();
+        return slides.getCurrentPosition()-slidePosDisplacement;
     }
 }
 

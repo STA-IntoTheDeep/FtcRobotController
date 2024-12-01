@@ -29,43 +29,122 @@ public class STA_drive_best extends LinearOpMode {
         //onderdelen.init(hardwareMap);
         //arm2.initArm2(hardwareMap);
         double ms;
-
+        double ms_difference = 0;
+        boolean toggleBakje;
+        boolean toggleClaw;
+        boolean bakejeMovementAllowed = true;
+        boolean clawMovementAllowed = true;
+        boolean manualInputAllowed1 = true;
+        boolean manualInputAllowed2 = true;
+        boolean manualInputAllowedArm = true;
         waitForStart();
         if (isStopRequested()) return;
         double bakjeServoPos = 1;
-        ms = runtime.milliseconds();
+        double clawServopos = 0;
+        double servoRotation = 0;
+        double trueSlidespower  = 0;
+        ms = runtime.milliseconds() - ms_difference;
         while (opModeIsActive()) {                                  //Loop van het rijden van de robot
             double y = -gamepad1.left_stick_x;                       //Koppelt geactiveerde knop op controller aan variabele
             double x = gamepad1.left_stick_y;
             double rotate = 0.6 * gamepad1.right_stick_x;
             double speed = 4 - 3 * gamepad1.right_trigger;
             drivetrain.drive(-x, -y, -rotate, speed);
+            toggleBakje = gamepad2.right_bumper;
+            toggleClaw = gamepad2.left_bumper;
+            double podX = parts.posX();
+            double podY = parts.posY();
 
-            parts.rollerIntake((gamepad2.right_trigger * 1.5) - (gamepad2.left_trigger * 1.5));
-            if (gamepad2.left_bumper){
-                if (bakjeServoPos == 1){
-                bakjeServoPos =0;}
-                else{bakjeServoPos = 0;}
+
+            if (toggleBakje == true && bakejeMovementAllowed == true) {
+                bakjeServoPos = -bakjeServoPos+1; //switch tussen 1 en 0
+                bakejeMovementAllowed = false;
             }
-            /*if (gamepad2.left_bumper) {
-                bakjeServoPos = 1;
-            } else if (gamepad2.right_bumper) {
-                bakjeServoPos = 0;
-            }*/
+            if (toggleBakje == false) {
+                bakejeMovementAllowed = true;}
+
+            if (toggleClaw == true && clawMovementAllowed == true) {
+                clawServopos = -clawServopos +1; //switch tussen 1 en 0
+                clawMovementAllowed = false;
+            }
+            if (toggleClaw == false) {
+                clawMovementAllowed = true;}
+
+            if ((gamepad2.left_trigger > 0)&&(servoRotation<1)) {
+                servoRotation += 0.03;
+            }
+            if ((gamepad2.right_trigger > 0)&&(servoRotation>0)) {
+                servoRotation -= 0.03;
+            }
+
+            parts.servoRotation(servoRotation);
             parts.sampleBakje(bakjeServoPos);
+            parts.intakeClaw(clawServopos);
 
             parts.setArmPower(gamepad2.left_stick_y);
 
-            double slidespower = gamepad2.right_stick_y;
+            double slidespower = -gamepad2.right_stick_y;
 
-            if (((parts.getSlidesPos() <= 100) || (slidespower <= 0)) && ((parts.getSlidesPos() >= 0) || (slidespower >= 0))){
-                parts.setSlidesPower(slidespower);
+            if (((manualInputAllowed1)&&(manualInputAllowed2))||gamepad2.back) {
+                trueSlidespower = 0;
+                if ((((parts.getSlidesPos() <= 3750) || (slidespower <= 0)) && ((parts.getSlidesPos() >= 0) || (slidespower >= 0))) || gamepad2.back) {
+                    trueSlidespower = slidespower;
+                }
+                manualInputAllowed2 = true;
+                manualInputAllowed2 = true;
+            }
+            //nieuw vanaf hier
+            double slidePos1 = 0;
+            double slidePos2 = 3500;
+            double slidePosVariation = 50;
+            if (Math.abs(parts.getSlidesPos()-slidePos1)>slidePosVariation){
+                if((gamepad2.x)&&(manualInputAllowed2)){
+                // zodat
+                        if (slidePos1 < parts.getSlidesPos()){
+                        trueSlidespower = -0.9;
+                        }
+                        else{
+                        trueSlidespower = 0.9;
+
+                        }
+                    manualInputAllowed1 = false;
+                }
+
+            }
+            else{
+                manualInputAllowed1 = true;
             }
 
+            if (Math.abs(parts.getSlidesPos()-slidePos2)>slidePosVariation){
+                if((gamepad2.y)&&(!gamepad2.x)&&(manualInputAllowed1)){
+                 // zodat
+                    if (slidePos2 < parts.getSlidesPos()){
+                        trueSlidespower = -0.9;
+                    }
+                    else{
+                        trueSlidespower = 0.9;
+                    }
+                    manualInputAllowed2 = false;
+                }
 
+            }
+            if (Math.abs(parts.getSlidesPos()-slidePos2)>slidePosVariation){
+                if((gamepad2.a)&&(manualInputAllowedArm)){
+                    manualInputAllowedArm = false;
+                }
+            }
+            else{
+                manualInputAllowedArm = true;
+            }
+            double rotation = parts.posY()- parts.posY2();
+            parts.setSlidesPower(trueSlidespower);
             telemetry.addData("slidesPos", parts.getSlidesPos());
+            telemetry.addData("rotation",rotation);
+            telemetry.addData("servoRotatePos", servoRotation);
             telemetry.update();
+
             /*
+            parts.rollerIntake((gamepad2.right_trigger * 1.5) - (gamepad2.left_trigger * 1.5)); // voor toggle
             double arm1Velocity = -0.8 * gamepad2.left_stick_y;
             double arm2Velocity = 0.6 * gamepad2.right_stick_y;
             boolean armCalibration = gamepad2.x;
@@ -138,7 +217,6 @@ public class STA_drive_best extends LinearOpMode {
             }
             slides.slides_go_brr(slides_movement);
         */
-
         }
 
 
