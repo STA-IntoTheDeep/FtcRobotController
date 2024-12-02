@@ -28,6 +28,7 @@ public class All_Parts {
     private Servo servoRotation;
     private Servo intakeOrientation;
     int slidePosDisplacement;
+    int armPosDisplacement;
 
     partcount c = new partcount();
     Servo[] servo = {servo0};
@@ -57,6 +58,7 @@ public class All_Parts {
         slides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slidePosDisplacement = slides.getCurrentPosition();
+        armPosDisplacement = arm.getCurrentPosition();
         //arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //arm2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
@@ -131,7 +133,9 @@ public class All_Parts {
     public int getSlidesPos(){
         return slides.getCurrentPosition()-slidePosDisplacement;
     }
-
+    public int getArmPos(){
+        return slides.getCurrentPosition()-slidePosDisplacement;
+    }
 }
 
 

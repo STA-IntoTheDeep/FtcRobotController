@@ -42,8 +42,9 @@ public class STA_drive_best extends LinearOpMode {
         if (isStopRequested()) return;
         double bakjeServoPos = 1;
         double clawServopos = 0;
-        double servoRotation = 0;
+        double servoRotation = 0.5;
         double trueSlidespower = 0;
+        double trueArmPower = 0;
         ms = runtime.milliseconds() - ms_difference;
         while (opModeIsActive()) {                                  //Loop van het rijden van de robot
             double y = -gamepad1.left_stick_x;                       //Koppelt geactiveerde knop op controller aan variabele
@@ -73,17 +74,22 @@ public class STA_drive_best extends LinearOpMode {
                 clawMovementAllowed = true;
             }
 
-            if ((gamepad2.left_trigger > 0) && (servoRotation < 1) && clawRotationAllowed == true) {
+            if ((gamepad2.left_trigger > 0) && (servoRotation < 1) && clawRotationAllowed) {
                 servoRotation += 0.25;
                 clawRotationAllowed = false;
 
             }
-            if ((gamepad2.right_trigger > 0) && (servoRotation > 0) && clawRotationAllowed == true) {
+            if ((gamepad2.right_trigger > 0) && (servoRotation > 0) && clawRotationAllowed) {
                 servoRotation -= 0.25;
                 clawRotationAllowed = false;
             }
             if (gamepad2.left_trigger == 0 && gamepad2.right_trigger == 0) {
                 clawRotationAllowed = true;
+            }
+            double armPower = -gamepad2.left_stick_y;
+            trueArmPower = 0;
+            if (((parts.getArmPos() <= 1000) || (armPower <= 0)) && ((parts.getSlidesPos() >= 0) || (armPower >= 0))) {
+                trueArmPower = armPower;
             }
 
             /*if ((gamepad2.left_trigger > 0)&&(servoRotation<1)) {
@@ -97,7 +103,7 @@ public class STA_drive_best extends LinearOpMode {
             parts.sampleBakje(bakjeServoPos);
             parts.intakeClaw(clawServopos);
 
-            parts.setArmPower(gamepad2.left_stick_y);
+            parts.setArmPower(trueArmPower);
 
             double slidespower = -gamepad2.right_stick_y;
 
