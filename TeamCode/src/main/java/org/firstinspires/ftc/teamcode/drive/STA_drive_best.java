@@ -34,6 +34,7 @@ public class STA_drive_best extends LinearOpMode {
         boolean toggleClaw;
         boolean bakejeMovementAllowed = true;
         boolean clawMovementAllowed = true;
+        boolean clawRotationAllowed = true;
         boolean manualInputAllowed1 = true;
         boolean manualInputAllowed2 = true;
         boolean manualInputAllowedArm = true;
@@ -42,7 +43,7 @@ public class STA_drive_best extends LinearOpMode {
         double bakjeServoPos = 1;
         double clawServopos = 0;
         double servoRotation = 0;
-        double trueSlidespower  = 0;
+        double trueSlidespower = 0;
         ms = runtime.milliseconds() - ms_difference;
         while (opModeIsActive()) {                                  //Loop van het rijden van de robot
             double y = -gamepad1.left_stick_x;                       //Koppelt geactiveerde knop op controller aan variabele
@@ -56,26 +57,41 @@ public class STA_drive_best extends LinearOpMode {
             double podY = parts.posY();
 
 
-            if (toggleBakje == true && bakejeMovementAllowed == true) {
-                bakjeServoPos = -bakjeServoPos+1; //switch tussen 1 en 0
+            if (toggleBakje && bakejeMovementAllowed) {
+                bakjeServoPos = -bakjeServoPos + 1; //switch tussen 1 en 0
                 bakejeMovementAllowed = false;
             }
-            if (toggleBakje == false) {
-                bakejeMovementAllowed = true;}
+            if (!toggleBakje) {
+                bakejeMovementAllowed = true;
+            }
 
-            if (toggleClaw == true && clawMovementAllowed == true) {
-                clawServopos = -clawServopos +1; //switch tussen 1 en 0
+            if (toggleClaw && clawMovementAllowed) {
+                clawServopos = -clawServopos + 1; //switch tussen 1 en 0
                 clawMovementAllowed = false;
             }
-            if (toggleClaw == false) {
-                clawMovementAllowed = true;}
+            if (!toggleClaw) {
+                clawMovementAllowed = true;
+            }
 
-            if ((gamepad2.left_trigger > 0)&&(servoRotation<1)) {
+            if ((gamepad2.left_trigger > 0) && (servoRotation < 1) && clawRotationAllowed == true) {
+                servoRotation += 0.25;
+                clawRotationAllowed = false;
+
+            }
+            if ((gamepad2.right_trigger > 0) && (servoRotation > 0) && clawRotationAllowed == true) {
+                servoRotation -= 0.25;
+                clawRotationAllowed = false;
+            }
+            if (gamepad2.left_trigger == 0 && gamepad2.right_trigger == 0) {
+                clawRotationAllowed = true;
+            }
+
+            /*if ((gamepad2.left_trigger > 0)&&(servoRotation<1)) {
                 servoRotation += 0.03;
             }
             if ((gamepad2.right_trigger > 0)&&(servoRotation>0)) {
                 servoRotation -= 0.03;
-            }
+            }*/
 
             parts.servoRotation(servoRotation);
             parts.sampleBakje(bakjeServoPos);
@@ -85,7 +101,7 @@ public class STA_drive_best extends LinearOpMode {
 
             double slidespower = -gamepad2.right_stick_y;
 
-            if (((manualInputAllowed1)&&(manualInputAllowed2))||gamepad2.back) {
+            if (((manualInputAllowed1) && (manualInputAllowed2)) || gamepad2.back) {
                 trueSlidespower = 0;
                 if ((((parts.getSlidesPos() <= 3750) || (slidespower <= 0)) && ((parts.getSlidesPos() >= 0) || (slidespower >= 0))) || gamepad2.back) {
                     trueSlidespower = slidespower;
@@ -97,49 +113,45 @@ public class STA_drive_best extends LinearOpMode {
             double slidePos1 = 0;
             double slidePos2 = 3500;
             double slidePosVariation = 50;
-            if (Math.abs(parts.getSlidesPos()-slidePos1)>slidePosVariation){
-                if((gamepad2.x)&&(manualInputAllowed2)){
-                // zodat
-                        if (slidePos1 < parts.getSlidesPos()){
+            if (Math.abs(parts.getSlidesPos() - slidePos1) > slidePosVariation) {
+                if ((gamepad2.x) && (manualInputAllowed2)) {
+                    // zodat
+                    if (slidePos1 < parts.getSlidesPos()) {
                         trueSlidespower = -0.9;
-                        }
-                        else{
+                    } else {
                         trueSlidespower = 0.9;
 
-                        }
+                    }
                     manualInputAllowed1 = false;
                 }
 
-            }
-            else{
+            } else {
                 manualInputAllowed1 = true;
             }
 
-            if (Math.abs(parts.getSlidesPos()-slidePos2)>slidePosVariation){
-                if((gamepad2.y)&&(!gamepad2.x)&&(manualInputAllowed1)){
-                 // zodat
-                    if (slidePos2 < parts.getSlidesPos()){
+            if (Math.abs(parts.getSlidesPos() - slidePos2) > slidePosVariation) {
+                if ((gamepad2.y) && (!gamepad2.x) && (manualInputAllowed1)) {
+                    // zodat
+                    if (slidePos2 < parts.getSlidesPos()) {
                         trueSlidespower = -0.9;
-                    }
-                    else{
+                    } else {
                         trueSlidespower = 0.9;
                     }
                     manualInputAllowed2 = false;
                 }
 
             }
-            if (Math.abs(parts.getSlidesPos()-slidePos2)>slidePosVariation){
-                if((gamepad2.a)&&(manualInputAllowedArm)){
+            if (Math.abs(parts.getSlidesPos() - slidePos2) > slidePosVariation) {
+                if ((gamepad2.a) && (manualInputAllowedArm)) {
                     manualInputAllowedArm = false;
                 }
-            }
-            else{
+            } else {
                 manualInputAllowedArm = true;
             }
-            double rotation = parts.posY()- parts.posY2();
+            double rotation = parts.posY() - parts.posY2();
             parts.setSlidesPower(trueSlidespower);
             telemetry.addData("slidesPos", parts.getSlidesPos());
-            telemetry.addData("rotation",rotation);
+            telemetry.addData("rotation", rotation);
             telemetry.addData("servoRotatePos", servoRotation);
             telemetry.update();
 

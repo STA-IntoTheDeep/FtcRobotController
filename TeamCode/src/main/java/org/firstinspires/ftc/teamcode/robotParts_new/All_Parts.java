@@ -131,6 +131,7 @@ public class All_Parts {
     public int getSlidesPos(){
         return slides.getCurrentPosition()-slidePosDisplacement;
     }
+
 }
 
 
