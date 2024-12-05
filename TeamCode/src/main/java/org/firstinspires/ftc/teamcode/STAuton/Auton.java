@@ -31,6 +31,7 @@ public class Auton extends LinearOpMode {
     double slides;
     double arm;
     double sampleStorage = 1;
+    double intakeClaw = 0;
     //double pos_x = parts.motorPos(hardwareMap)[1]; //x position
     //double pos_y = parts.motorPos(hardwareMap)[3]; // y position
 
@@ -57,7 +58,7 @@ public class Auton extends LinearOpMode {
                         vy = 0;
                         vx = 0;
                         va = 0;
-                        slides = -0.9;
+                        slides = 0.9;
 
 
                         if (ms > 3300) {
@@ -69,16 +70,30 @@ public class Auton extends LinearOpMode {
                         slides = 0;
                         vy = -1;
                         vx = -0.2;
-                        if (ms > 4300) {
+                        if (ms > 3600) {
                             stage = "bij basket";
                         }
                         break;
                     case "bij basket":
                         vy = 0;
                         sampleStorage = 0;
-
-
-                        stage = "done";
+                        if (ms > 4200) {
+                            stage = "first sample scored";
+                        }
+                        break;
+                    case "first sample scored":
+                        arm = 1;
+                        sampleStorage = 1;
+                        if (ms > 5200) {
+                            stage = "arm naar buiten";
+                        }
+                        break;
+                    case "arm naar buiten":
+                        arm = 0;
+                        intakeClaw = 1;
+                        if (ms > 5400) {
+                            stage = "arm naar buiten";
+                        }
                         break;
                     case "done":
                         vx = 0;
@@ -111,6 +126,7 @@ public class Auton extends LinearOpMode {
                 parts.setSlidesPower(slides);
                 parts.setArmPower(arm);
                 parts.sampleBakje(sampleStorage);
+                parts.intakeClaw(intakeClaw);
             }/* else if (hasInit) {
                 leftFront.setPower(fl / 1000);
                 rightFront.setPower(fr / 1000);

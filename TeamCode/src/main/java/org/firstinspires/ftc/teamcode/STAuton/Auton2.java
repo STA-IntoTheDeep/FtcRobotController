@@ -69,6 +69,7 @@ public class Auton2 extends LinearOpMode {
         //start
         // parts
         apac.init(hardwareMap);
+        waitForStart();
         while(true){
             //loop
             telemetry.addData("stage=",curStage);

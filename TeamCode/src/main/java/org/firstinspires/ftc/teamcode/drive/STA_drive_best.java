@@ -53,7 +53,7 @@ public class STA_drive_best extends LinearOpMode {
             double y = -gamepad1.left_stick_x;                       //Koppelt geactiveerde knop op controller aan variabele
             double x = gamepad1.left_stick_y;
             double rotate = 0.6 * gamepad1.right_stick_x;
-            double speed = 4 - 3 * gamepad1.right_trigger;
+            double speed = 4 - 3 * gamepad1.left_trigger;
             drivetrain.drive(-x, -y, -rotate, speed);
             toggleBakje = gamepad2.right_bumper;
             toggleClaw = gamepad2.left_bumper;
@@ -98,7 +98,15 @@ public class STA_drive_best extends LinearOpMode {
                 clawRotationAllowed = true;
             }
             double armPower = -gamepad2.left_stick_y;
-            trueArmPower = armPower;
+            if ((armPower == 0) && (gamepad1.left_bumper)){
+                trueArmPower = -1;
+            }
+            else if ((armPower == 0) && (gamepad1.right_bumper)){
+                trueArmPower = 1;
+            }
+            else {
+                trueArmPower = armPower;
+            }
             /*if (((parts.getArmPos() <= 1000) || (armPower <= 0)) && ((parts.getArmPos() >= 0) || (armPower >= 0))) {
                 trueArmPower = armPower;
             }*/
@@ -138,7 +146,7 @@ public class STA_drive_best extends LinearOpMode {
             double slidespower = -gamepad2.right_stick_y;
 
             if (((slidesInputAllowed1) && (slidesInputAllowed2)) || gamepad2.back) {
-                trueSlidespower = slidespower;
+                  trueSlidespower = slidespower;
                 /*if ((((parts.getSlidesPos() <= 3750) || (slidespower <= 0)) && ((parts.getSlidesPos() >= 0) || (slidespower >= 0))) || gamepad2.back) {
                     trueSlidespower = slidespower;
                 }*/
