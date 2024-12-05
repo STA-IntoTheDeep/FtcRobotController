@@ -32,8 +32,10 @@ public class STA_drive_best extends LinearOpMode {
         double ms_difference = 0;
         boolean toggleBakje;
         boolean toggleClaw;
+        boolean toggleIntakeOrientation = true;
         boolean bakejeMovementAllowed = true;
         boolean clawMovementAllowed = true;
+        boolean intakeOrientationMovementAllowed = true;
         boolean clawRotationAllowed = true;
         boolean slidesInputAllowed1 = true;
         boolean slidesInputAllowed2 = true;
@@ -45,8 +47,9 @@ public class STA_drive_best extends LinearOpMode {
         double servoRotation = 0.5;
         double trueSlidespower = 0;
         double trueArmPower = 0;
+        double intakeOrientation = 0;
         ms = runtime.milliseconds() - ms_difference;
-        while (opModeIsActive()) {                                  //Loop van het rijden van de robot
+        while (opModeIsActive()) {                                   //Loop van het rijden van de robot
             double y = -gamepad1.left_stick_x;                       //Koppelt geactiveerde knop op controller aan variabele
             double x = gamepad1.left_stick_y;
             double rotate = 0.6 * gamepad1.right_stick_x;
@@ -54,6 +57,7 @@ public class STA_drive_best extends LinearOpMode {
             drivetrain.drive(-x, -y, -rotate, speed);
             toggleBakje = gamepad2.right_bumper;
             toggleClaw = gamepad2.left_bumper;
+            toggleIntakeOrientation = gamepad2.a;
             double podX = parts.posX();
             double podY = parts.posY();
 
@@ -73,25 +77,32 @@ public class STA_drive_best extends LinearOpMode {
             if (!toggleClaw) {
                 clawMovementAllowed = true;
             }
+            if (toggleIntakeOrientation && intakeOrientationMovementAllowed) {
+                intakeOrientation = -intakeOrientation + 0.8; //switch tussen 1 en 0
+                intakeOrientationMovementAllowed = false;
+            }
+            if (!toggleIntakeOrientation) {
+                intakeOrientationMovementAllowed = true;
+            }
 
-            if ((gamepad2.left_trigger > 0) && (servoRotation < 1) && clawRotationAllowed) {
+            if ((gamepad2.left_trigger > 0.5) && (servoRotation < 1) && clawRotationAllowed) {
                 servoRotation += 0.25;
                 clawRotationAllowed = false;
 
             }
-            if ((gamepad2.right_trigger > 0) && (servoRotation > 0) && clawRotationAllowed) {
+            if ((gamepad2.right_trigger > 0.5) && (servoRotation > 0) && clawRotationAllowed) {
                 servoRotation -= 0.25;
                 clawRotationAllowed = false;
             }
-            if (gamepad2.left_trigger == 0 && gamepad2.right_trigger == 0) {
+            if (gamepad2.left_trigger <= 0.5 && gamepad2.right_trigger <= 0.5) {
                 clawRotationAllowed = true;
             }
             double armPower = -gamepad2.left_stick_y;
-            trueArmPower = 0;
-            if (((parts.getArmPos() <= 1000) || (armPower <= 0)) && ((parts.getArmPos() >= 0) || (armPower >= 0))) {
+            trueArmPower = armPower;
+            /*if (((parts.getArmPos() <= 1000) || (armPower <= 0)) && ((parts.getArmPos() >= 0) || (armPower >= 0))) {
                 trueArmPower = armPower;
-            }
-            double armPos1 = 0;
+            }*/
+            /*double armPos1 = 0;
             double armPos2 = 1000;
             if (gamepad2.a) {
                 if (armPos1 < parts.getArmPos()) {
@@ -102,12 +113,12 @@ public class STA_drive_best extends LinearOpMode {
             }
             if ((gamepad2.b) && (!gamepad2.a)) {
                 if (armPos2 < parts.getArmPos()) {
-                    trueSlidespower = -0.9;
+                    trueArmPower = -0.9;
                 } else {
-                    trueSlidespower = 0.9;
+                    trueArmPower = 0.9;
                 }
                 slidesInputAllowed2 = false;
-            }
+            }*/
 
 
             /*if ((gamepad2.left_trigger > 0)&&(servoRotation<1)) {
@@ -120,16 +131,17 @@ public class STA_drive_best extends LinearOpMode {
             parts.servoRotation(servoRotation);
             parts.sampleBakje(bakjeServoPos);
             parts.intakeClaw(clawServopos);
+            parts.setIntakeOrientation(intakeOrientation);
 
             parts.setArmPower(trueArmPower);
 
             double slidespower = -gamepad2.right_stick_y;
 
             if (((slidesInputAllowed1) && (slidesInputAllowed2)) || gamepad2.back) {
-                trueSlidespower = 0;
-                if ((((parts.getSlidesPos() <= 3750) || (slidespower <= 0)) && ((parts.getSlidesPos() >= 0) || (slidespower >= 0))) || gamepad2.back) {
+                trueSlidespower = slidespower;
+                /*if ((((parts.getSlidesPos() <= 3750) || (slidespower <= 0)) && ((parts.getSlidesPos() >= 0) || (slidespower >= 0))) || gamepad2.back) {
                     trueSlidespower = slidespower;
-                }
+                }*/
                 slidesInputAllowed1 = true;
                 slidesInputAllowed2 = true;
             }
@@ -140,12 +152,13 @@ public class STA_drive_best extends LinearOpMode {
             if (Math.abs(parts.getSlidesPos() - slidePos1) > slidePosVariation) {
                 if ((gamepad2.x) && (slidesInputAllowed2)) {
                     // zodat
-                    if (slidePos1 < parts.getSlidesPos()) {
+                    trueSlidespower = -1;
+                    /*if (slidePos1 < parts.getSlidesPos()) {
                         trueSlidespower = -0.9;
                     } else {
                         trueSlidespower = 0.9;
 
-                    }
+                    }*/
                     slidesInputAllowed1 = false;
                 }
 
@@ -157,9 +170,9 @@ public class STA_drive_best extends LinearOpMode {
                 if ((gamepad2.y) && (!gamepad2.x) && (slidesInputAllowed1)) {
                     // zodat
                     if (slidePos2 < parts.getSlidesPos()) {
-                        trueSlidespower = -0.9;
+                        trueSlidespower = -1;
                     } else {
-                        trueSlidespower = 0.9;
+                        trueSlidespower = 1;
                     }
                     slidesInputAllowed2 = false;
                 }
