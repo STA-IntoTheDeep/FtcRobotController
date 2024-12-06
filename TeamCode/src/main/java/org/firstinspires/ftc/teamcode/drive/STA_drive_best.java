@@ -42,7 +42,7 @@ public class STA_drive_best extends LinearOpMode {
         boolean armInputAllowed = true;
         waitForStart();
         if (isStopRequested()) return;
-        double bakjeServoPos = 1;
+        double bakjeServoPos = 0.95;
         double clawServopos = 0;
         double servoRotation = 0.5;
         double trueSlidespower = 0;
@@ -63,7 +63,12 @@ public class STA_drive_best extends LinearOpMode {
 
 
             if (toggleBakje && bakejeMovementAllowed) {
-                bakjeServoPos = -bakjeServoPos + 1; //switch tussen 1 en 0
+                if (bakjeServoPos == 0){
+                    bakjeServoPos = 0.95;
+                }
+                else if (bakjeServoPos == 0.95){
+                    bakjeServoPos = 0;
+                }
                 bakejeMovementAllowed = false;
             }
             if (!toggleBakje) {
@@ -146,27 +151,26 @@ public class STA_drive_best extends LinearOpMode {
             double slidespower = -gamepad2.right_stick_y;
 
             if (((slidesInputAllowed1) && (slidesInputAllowed2)) || gamepad2.back) {
-                  trueSlidespower = slidespower;
-                /*if ((((parts.getSlidesPos() <= 3750) || (slidespower <= 0)) && ((parts.getSlidesPos() >= 0) || (slidespower >= 0))) || gamepad2.back) {
+                  trueSlidespower = 0;
+                if ((((parts.getSlidesPos() <= 3750) || (slidespower <= 0)) && ((parts.getSlidesPos() >= 0) || (slidespower >= 0))) || gamepad2.back) {
                     trueSlidespower = slidespower;
-                }*/
+                }
                 slidesInputAllowed1 = true;
                 slidesInputAllowed2 = true;
             }
             //nieuw vanaf hier
             double slidePos1 = 0;
-            double slidePos2 = 3500;
-            double slidePosVariation = 50;
+            double slidePos2 = 3750;
+            double slidePosVariation = 300;
             if (Math.abs(parts.getSlidesPos() - slidePos1) > slidePosVariation) {
                 if ((gamepad2.x) && (slidesInputAllowed2)) {
                     // zodat
-                    trueSlidespower = -1;
-                    /*if (slidePos1 < parts.getSlidesPos()) {
-                        trueSlidespower = -0.9;
+                    if (slidePos1 < parts.getSlidesPos()) {
+                        trueSlidespower = -1;
                     } else {
-                        trueSlidespower = 0.9;
+                        trueSlidespower = 1;
 
-                    }*/
+                    }
                     slidesInputAllowed1 = false;
                 }
 

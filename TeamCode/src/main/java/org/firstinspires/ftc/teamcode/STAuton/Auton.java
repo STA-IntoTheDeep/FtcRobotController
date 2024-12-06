@@ -55,46 +55,78 @@ public class Auton extends LinearOpMode {
                 switch (stage) {
                     case "init complete":
 
-                        vy = 0;
+                        vy = 1;
                         vx = 0;
                         va = 0;
-                        slides = 0.9;
+                        slides = 0;
+                        if (ms > 1000){
+                            stage = "vydone";
+                        }
+                        break;
+                    case "vydone":
 
+                        vy = 0;
+                        vx = 1;
+                        va = 0;
+                        slides = 0;
+                        if (ms > 2000){
+                            stage = "vxdone";
+                        }
+                        break;
+                    case "vxdone":
 
-                        if (ms > 3300) {
-                            stage = "slides omhoog";
+                        vy = 0;
+                        vx = 0;
+                        va = 1;
+                        slides = 0;
+                        if (ms > 3000){
+                            stage = "done";
                         }
                         break;
 
-                    case "slides omhoog":
+
+                        /*if (parts.getSlidesPos() > 3750) {
+                            stage = "slides omhoog";
+                            startuptime = ms;
+                        }
+                        break;*/
+
+                    /*case "slides omhoog":
                         slides = 0;
-                        vy = -1;
-                        vx = -0.2;
-                        if (ms > 3600) {
+                        vy = 1;
+                        vx = 0;
+                        if (ms > 500) {
                             stage = "bij basket";
                         }
                         break;
                     case "bij basket":
                         vy = 0;
                         sampleStorage = 0;
-                        if (ms > 4200) {
+                        if (ms > 1200) {
                             stage = "first sample scored";
                         }
                         break;
                     case "first sample scored":
-                        arm = 1;
+                        va = 1;
                         sampleStorage = 1;
-                        if (ms > 5200) {
+                        if (ms > 3000) {
+                            stage = "draai naar samples";
+                        }
+                        break;
+                    case "draai naar samples":
+                        va = 0;
+                        arm = 1;
+                        if (ms > 4500) {
                             stage = "arm naar buiten";
                         }
                         break;
                     case "arm naar buiten":
                         arm = 0;
                         intakeClaw = 1;
-                        if (ms > 5400) {
-                            stage = "arm naar buiten";
+                        if (ms > 5000) {
+                            stage = "done";
                         }
-                        break;
+                        break;*/
                     case "done":
                         vx = 0;
                         vy = 0;
