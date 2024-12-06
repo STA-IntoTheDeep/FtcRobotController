@@ -47,7 +47,7 @@ public class STA_drive_best extends LinearOpMode {
         double servoRotation = 0.5;
         double trueSlidespower = 0;
         double trueArmPower = 0;
-        double intakeOrientation = 0;
+        double intakeOrientation = 1;
         ms = runtime.milliseconds() - ms_difference;
         while (opModeIsActive()) {                                   //Loop van het rijden van de robot
             double y = -gamepad1.left_stick_x;                       //Koppelt geactiveerde knop op controller aan variabele
@@ -202,6 +202,7 @@ public class STA_drive_best extends LinearOpMode {
             telemetry.addData("slidesPos", parts.getSlidesPos());
             telemetry.addData("rotation", rotation);
             telemetry.addData("servoRotatePos", servoRotation);
+            telemetry.addData("ypos", podY);
             telemetry.update();
 
             /*

@@ -14,6 +14,7 @@ class partcount {
 public class All_Parts {
 
     private Servo servo0;
+    int posyOffset;
     private DcMotorEx lf;
     private DcMotorEx rf;
     private DcMotorEx lb;
@@ -61,7 +62,9 @@ public class All_Parts {
         armPosDisplacement = arm.getCurrentPosition();
         //arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //arm2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        posyOffset = lf.getCurrentPosition();
     }
+
 
     public void servo0(int which, double pos) {
         servo[which].setPosition(pos);
@@ -79,7 +82,7 @@ public class All_Parts {
      */
 
     public int posY() {
-        return rb.getCurrentPosition();
+        return (lf.getCurrentPosition()-posyOffset);
     }
 
     public int posX() {
@@ -125,7 +128,13 @@ public class All_Parts {
     public void setSlidesPower(double power) {
         slides.setPower(power);
     }
-
+    public void setSlidePosition(double pos){
+            if (getSlidesPos()>pos){
+                setSlidesPower(-0.9);
+            } else if (getSlidesPos()<pos) {
+                setSlidesPower(0.9);
+            } else{setSlidesPower(0);}
+    }
     public void setArmPower(double power) {
         arm.setPower(power);
     }
