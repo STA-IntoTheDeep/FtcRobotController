@@ -81,32 +81,32 @@ public class Auton extends LinearOpMode {
                     case "slides omhoog":
                         slides = 0.3;
                         sampleStorage = 0;
-                        if (ms > 1000) {
+                        if (ms > 2000) {
                             stage = "first sample scored";
                         }
                         break;
-                    case "first sample scored":
+                    /*case "first sample scored":
                         va = 1;
                         sampleStorage = 0.95;
                         slides = 0;
-                        if (pos_y > -12000) {
+                        if (pos_y > -14000) {
                             stage = "draai naar samples";
                         }
                         break;
                     case "draai naar samples":
                         va = 0;
                         vy = 1;
-                        intakeOrientation = 0;
+                        intakeOrientation = 1;
                         intakeClaw = 0;
-                        if (pos_y > 5000) {
+                        if (pos_y > -5000) {
                             stage = "bij first sample";
                             startuptime = ms;
                             ms = startuptime - ms;
                         }
                         break;
                     case "bij first sample":
-                        arm = 1;
-                        if (ms > 1200) {
+                        arm = -1;
+                        if (ms > 500) {
                             stage = "arm naar buiten";
                         }
                         break;
@@ -121,8 +121,8 @@ public class Auton extends LinearOpMode {
                         }
                         break;
                     case "slides naar beneden":
-                        arm = -1;
-                        intakeOrientation = 1;
+                        arm = 1;
+                        intakeOrientation = 0;
                         slides = 0;
                         if (ms > 1300) {
                             stage = "klaar voor sample drop";
@@ -166,7 +166,7 @@ public class Auton extends LinearOpMode {
                         vy = 0;
                         va = 0;
                         slides = 0;
-                        break;
+                        break;*/
                     default:
                         vy = 0;
                         vx = 0;
@@ -205,3 +205,4 @@ public class Auton extends LinearOpMode {
         }
     }
 }
+
