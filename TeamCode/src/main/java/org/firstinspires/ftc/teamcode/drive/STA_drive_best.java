@@ -30,15 +30,19 @@ public class STA_drive_best extends LinearOpMode {
         //arm2.initArm2(hardwareMap);
         double ms;
         double ms_difference = 0;
+        boolean toggleSpeed;
         boolean toggleBakje;
         boolean toggleClaw;
         boolean toggleIntakeOrientation = true;
         boolean bakejeMovementAllowed = true;
         boolean clawMovementAllowed = true;
         boolean intakeOrientationMovementAllowed = true;
+        boolean speedChangeAllowed = true;
         boolean clawRotationAllowed = true;
         boolean slidesInputAllowed1 = true;
         boolean slidesInputAllowed2 = true;
+        boolean armInputAllowed1 = true;
+        boolean armInputAllowed2 = true;
         boolean armInputAllowed = true;
         waitForStart();
         if (isStopRequested()) return;
@@ -47,34 +51,49 @@ public class STA_drive_best extends LinearOpMode {
         double servoRotation = 0.5;
         double trueSlidespower = 0;
         double trueArmPower = 0;
-        double intakeOrientation = 1;
+        double intakeOrientation = 0;
+        double speed = 0.6;
         ms = runtime.milliseconds() - ms_difference;
         while (opModeIsActive()) {                                   //Loop van het rijden van de robot
             double y = -gamepad1.left_stick_x;                       //Koppelt geactiveerde knop op controller aan variabele
             double x = gamepad1.left_stick_y;
             double rotate = 0.6 * gamepad1.right_stick_x;
-            double speed = 4 - 3 * gamepad1.left_trigger;
-            drivetrain.drive(-x, -y, -rotate, speed);
+            toggleSpeed = gamepad1.b;
+            //double speed = 4 - 3 * (gamepad1.b ? 1:0);
             toggleBakje = gamepad2.right_bumper;
             toggleClaw = gamepad2.left_bumper;
-            toggleIntakeOrientation = gamepad2.a;
+            toggleIntakeOrientation = gamepad2.dpad_up;
             double podX = parts.posX();
             double podY = parts.posY();
 
 
             if (toggleBakje && bakejeMovementAllowed) {
-                if (bakjeServoPos == 0){
+                if (bakjeServoPos == 0.5){
                     bakjeServoPos = 0.95;
                 }
                 else if (bakjeServoPos == 0.95){
-                    bakjeServoPos = 0;
+                    bakjeServoPos = 0.5;
                 }
                 bakejeMovementAllowed = false;
             }
             if (!toggleBakje) {
                 bakejeMovementAllowed = true;
             }
+            if (toggleSpeed && speedChangeAllowed) {
+                if (speed == 0.6){
+                    speed = 3;
+                }
+                else if (speed == 3){
+                    speed = 0.6;
+                }
+                speedChangeAllowed = false;
+            }
+            telemetry.addData("Maxpower", drivetrain.getmaxpower());
 
+            if (!toggleSpeed) {
+                speedChangeAllowed = true;
+            }
+            drivetrain.drive(-x, -y, -rotate, speed);
             if (toggleClaw && clawMovementAllowed) {
                 clawServopos = -clawServopos + 1; //switch tussen 1 en 0
                 clawMovementAllowed = false;
@@ -83,7 +102,7 @@ public class STA_drive_best extends LinearOpMode {
                 clawMovementAllowed = true;
             }
             if (toggleIntakeOrientation && intakeOrientationMovementAllowed) {
-                intakeOrientation = -intakeOrientation + 0.8; //switch tussen 1 en 0
+                intakeOrientation = -intakeOrientation + 0.7; //switch tussen 1 en 0
                 intakeOrientationMovementAllowed = false;
             }
             if (!toggleIntakeOrientation) {
@@ -112,34 +131,30 @@ public class STA_drive_best extends LinearOpMode {
             else {
                 trueArmPower = armPower;
             }
-            /*if (((parts.getArmPos() <= 1000) || (armPower <= 0)) && ((parts.getArmPos() >= 0) || (armPower >= 0))) {
-                trueArmPower = armPower;
-            }*/
-            /*double armPos1 = 0;
-            double armPos2 = 1000;
+            trueArmPower = 0;
+            if ((((parts.getArmPos() <= 4400) || (armPower <= 0)) && ((parts.getArmPos() >= -10000) || (armPower >= 0))) || gamepad2.back) {
+                    trueArmPower = armPower;
+            }
+            double armPos1 = 400;
+            double armPos2 = 4200;
             if (gamepad2.a) {
-                if (armPos1 < parts.getArmPos()) {
-                    trueArmPower = -0.9;
+                // zodat
+                intakeOrientation = 0.7;
+                servoRotation = 0.75;
+                if (armPos1 < parts.getArmPos()){
+                    trueArmPower = -1;
                 } else {
-                    trueArmPower = 0.9;
+                    clawServopos = 0;
                 }
             }
-            if ((gamepad2.b) && (!gamepad2.a)) {
-                if (armPos2 < parts.getArmPos()) {
-                    trueArmPower = -0.9;
-                } else {
-                    trueArmPower = 0.9;
+            if ((gamepad2.b)) {
+                // zodat
+                intakeOrientation = 0;
+                if (armPos2 > parts.getArmPos()) {
+                    clawServopos = 0;
+                    trueArmPower = 1;
                 }
-                slidesInputAllowed2 = false;
-            }*/
-
-
-            /*if ((gamepad2.left_trigger > 0)&&(servoRotation<1)) {
-                servoRotation += 0.03;
             }
-            if ((gamepad2.right_trigger > 0)&&(servoRotation>0)) {
-                servoRotation -= 0.03;
-            }*/
 
             parts.servoRotation(servoRotation);
             parts.sampleBakje(bakjeServoPos);
@@ -152,7 +167,7 @@ public class STA_drive_best extends LinearOpMode {
 
             if (((slidesInputAllowed1) && (slidesInputAllowed2)) || gamepad2.back) {
                   trueSlidespower = 0;
-                if ((((parts.getSlidesPos() <= 3750) || (slidespower <= 0)) && ((parts.getSlidesPos() >= 0) || (slidespower >= 0))) || gamepad2.back) {
+                if ((((parts.getSlidesPos() <= 3400) || (slidespower <= 0)) && ((parts.getSlidesPos() >= 0) || (slidespower >= 0))) || gamepad2.back) {
                     trueSlidespower = slidespower;
                 }
                 slidesInputAllowed1 = true;
@@ -160,16 +175,15 @@ public class STA_drive_best extends LinearOpMode {
             }
             //nieuw vanaf hier
             double slidePos1 = 0;
-            double slidePos2 = 3750;
-            double slidePosVariation = 300;
+            double slidePos2 = 3400;
+            double slidePosVariation = 100;
             if (Math.abs(parts.getSlidesPos() - slidePos1) > slidePosVariation) {
-                if ((gamepad2.x) && (slidesInputAllowed2)) {
+                if ((gamepad2.x) && (slidesInputAllowed1)) {
                     // zodat
                     if (slidePos1 < parts.getSlidesPos()) {
                         trueSlidespower = -1;
                     } else {
                         trueSlidespower = 1;
-
                     }
                     slidesInputAllowed1 = false;
                 }
@@ -179,16 +193,14 @@ public class STA_drive_best extends LinearOpMode {
             }
 
             if (Math.abs(parts.getSlidesPos() - slidePos2) > slidePosVariation) {
-                if ((gamepad2.y) && (!gamepad2.x) && (slidesInputAllowed1)) {
+                if ((gamepad2.y) && (!gamepad2.x) && (slidesInputAllowed2)) {
                     // zodat
-                    if (slidePos2 < parts.getSlidesPos()) {
-                        trueSlidespower = -1;
-                    } else {
-                        trueSlidespower = 1;
-                    }
+                    trueSlidespower=((Math.abs(parts.getSlidesPos()-slidePos2+500)-Math.abs(parts.getSlidesPos()-slidePos2-500))*-0.0009);
                     slidesInputAllowed2 = false;
                 }
 
+            } else {
+                slidesInputAllowed2 = true;
             }
             if (Math.abs(parts.getSlidesPos() - slidePos2) > slidePosVariation) {
                 if ((gamepad2.a) && (armInputAllowed)) {
@@ -203,6 +215,9 @@ public class STA_drive_best extends LinearOpMode {
             telemetry.addData("rotation", rotation);
             telemetry.addData("servoRotatePos", servoRotation);
             telemetry.addData("ypos", podY);
+            telemetry.addData("intakeOrientation", intakeOrientation);
+            telemetry.addData("speed", speed);
+            telemetry.addData("armpos",parts.getArmPos());
             telemetry.update();
 
             /*

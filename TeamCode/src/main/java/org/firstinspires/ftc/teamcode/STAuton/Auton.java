@@ -31,9 +31,9 @@ public class Auton extends LinearOpMode {
     double slides;
     double slidesPos = 0;
     double arm;
-    double sampleStorage = 1;
+    double sampleStorage = 0.95 ;
     double intakeClaw = 0;
-    double intakeOrientation = 1;
+    double intakeOrientation = 0;
     //double pos_x = parts.motorPos(hardwareMap)[1]; //x position
     //double pos_y = parts.motorPos(hardwareMap)[3]; // y position
 
@@ -61,6 +61,49 @@ public class Auton extends LinearOpMode {
                 telemetry.addData("Slidespos", parts.getSlidesPos());
                 switch (stage) {
                     case "init complete":
+                        arm = 1;
+                        if(parts.getArmPos()>2000){
+                            stage ="arm weg";
+                        }
+                        break;
+                    case "arm weg":  //test
+                        slidesPos = 3750;
+                        vy = -1;
+                        arm=0;
+                        if (-pos_y>12000){stage="at location";}
+                        break;
+                    case "at location":
+                        vy = 0;
+                        if (parts.getSlidesPos()>3500){
+                            stage="slides up";
+                            startuptime = runtime.milliseconds();
+                        }
+                        break;
+                    case "slides up":
+                        sampleStorage = 0.5;
+                        if (ms>1000){
+                            stage = "sample scored";
+
+                        }
+                        break;
+                    case "sample scored":
+                        vy = 1;
+                        if(pos_y>=0){
+                            stage = "retreat complete";
+                            startuptime = runtime.milliseconds();
+                        }
+                    case "retreat complete":
+                        sampleStorage = 0.9;
+                        vy = 0;
+                        if (ms>2000){stage = "servo retracted";}
+                        break;
+                    case "servo retracted":
+                        slidesPos = 0;
+                        break;
+
+
+
+                    /*case "init complete":
                         vy = -1;
                         vx = 0;
                         va = 0;
@@ -84,7 +127,12 @@ public class Auton extends LinearOpMode {
                         if (ms > 2000) {
                             stage = "first sample scored";
                         }
-                        break;
+                        break;*/
+
+
+
+
+
                     /*case "first sample scored":
                         va = 1;
                         sampleStorage = 0.95;
@@ -189,8 +237,8 @@ public class Auton extends LinearOpMode {
             //handle movement
             if (!manual) {
                 parts.drive0(vy, vx, va, 3);
+                //parts.setSlidesPower(slides);
                 parts.setSlidePosition(slidesPos);
-                parts.setSlidesPower(slides);
                 parts.setArmPower(arm);
                 parts.sampleBakje(sampleStorage);
                 parts.intakeClaw(intakeClaw);
@@ -201,6 +249,7 @@ public class Auton extends LinearOpMode {
                 rightBack.setPower(br / 1000);
                 leftBack.setPower(bl / 1000);
             }*/
+            telemetry.addData("slidespower", parts.slidespower());
             telemetry.update();
         }
     }

@@ -19,7 +19,7 @@ public class All_Parts {
     private DcMotorEx rf;
     private DcMotorEx lb;
     private DcMotorEx rb;
-    private DcMotorEx slides;
+    public DcMotorEx slides;
     private DcMotorEx arm;
     //private DcMotorEx arm;
     //private DcMotorEx arm2;
@@ -129,12 +129,10 @@ public class All_Parts {
         slides.setPower(power);
     }
     public void setSlidePosition(double pos){
-            if (getSlidesPos()>pos){
-                setSlidesPower(-0.9);
-            } else if (getSlidesPos()<pos) {
-                setSlidesPower(0.9);
-            } else{setSlidesPower(0);}
+        slides.setPower((Math.abs(slides.getCurrentPosition()-slidePosDisplacement-pos+500)-Math.abs(slides.getCurrentPosition()-slidePosDisplacement-pos-500))*-0.0009);
+
     }
+    public double slidespower(){return slides.getPower();}
     public void setArmPower(double power) {
         arm.setPower(power);
     }
@@ -143,7 +141,7 @@ public class All_Parts {
         return slides.getCurrentPosition()-slidePosDisplacement;
     }
     public int getArmPos(){
-        return slides.getCurrentPosition()-slidePosDisplacement;
+        return arm.getCurrentPosition()-armPosDisplacement;
     }
 }
 

@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class Drivetrain_new {
 
     private DcMotorEx leftFront;
@@ -36,14 +38,14 @@ public class Drivetrain_new {
     public double pos_y() {
         return rightBack.getCurrentPosition() - startup_y;
     }
-
-    public void drive(double forward, double right, double rotate, double GasGasGas) {
+    double maxPower;
+    public void drive(double forward, double right, double rotate, double speed) {
         double leftFrontPower = -forward - right + rotate;
         double rightFrontPower = -forward + right - rotate;
         double rightRearPower = -forward - right - rotate;
         double leftRearPower = -forward + right + rotate;
-        double maxPower = GasGasGas;
 
+        maxPower = speed;
         maxPower = Math.max(maxPower, Math.abs(leftFrontPower));
         maxPower = Math.max(maxPower, Math.abs(rightFrontPower));
         maxPower = Math.max(maxPower, Math.abs(rightRearPower));
@@ -51,8 +53,12 @@ public class Drivetrain_new {
 
         leftFront.setPower(leftFrontPower / maxPower);
         rightFront.setPower(-rightFrontPower / maxPower);
-        rightBack.setPower(-1 * -rightRearPower / maxPower);            //-- omdat gears
+        rightBack.setPower(rightRearPower / maxPower);            //-- omdat gears
         leftBack.setPower(leftRearPower / maxPower);
+    }
+
+    public double getmaxpower(){
+        return maxPower;
     }
 }
 
