@@ -61,8 +61,8 @@ public class STA_drive_best extends LinearOpMode {
             double armPower = -gamepad2.left_stick_y;
             double podX = parts.posX();
             double podY = parts.posY();
-            double armPos1 = 400;
-            double armPos2 = 4200;
+            double armPos1 = 100;
+            double armPos2 = 1050;
             double slidespower = -gamepad2.right_stick_y;
             double slidePos1 = 0;
             double slidePos2 = 3400;
@@ -186,7 +186,6 @@ public class STA_drive_best extends LinearOpMode {
             //move slides if allowed 2
             if (Math.abs(parts.getSlidesPos() - slidePos2) > slidePosVariation) {
                 if ((gamepad2.y) && (!gamepad2.x) && (slidesInputAllowed2)) {
-                    // zodat
                     trueSlidespower = ((Math.abs(parts.getSlidesPos() - slidePos2 + 500) - Math.abs(parts.getSlidesPos() - slidePos2 - 500)) * -0.0009);
                     slidesInputAllowed2 = false;
                 }
@@ -194,18 +193,6 @@ public class STA_drive_best extends LinearOpMode {
             } else {
                 slidesInputAllowed2 = true;
             }
-
-
-            if (Math.abs(parts.getSlidesPos() - slidePos2) > slidePosVariation) {
-                if ((gamepad2.a) && (armInputAllowed)) {
-                    armInputAllowed = false;
-                }
-            } else {
-                armInputAllowed = true;
-            }
-
-
-
 
             parts.servoRotation(servoRotation);
             parts.sampleBakje(bakjeServoPos);
