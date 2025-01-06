@@ -1,9 +1,14 @@
 package org.firstinspires.ftc.teamcode.STAuton;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.robotParts_new.All_Parts;
 
 @Autonomous(name = "Autonomous", group = "Autonomous")
@@ -14,6 +19,7 @@ public class Auton extends LinearOpMode {
     //Slaat op hoe lang de robot is geinitialiseerd
 
     double pos_y = 0;
+    double pos_x = 0;
 
     boolean autoEnabled = true;
     boolean manual = false;
@@ -36,7 +42,8 @@ public class Auton extends LinearOpMode {
     double intakeOrientation = 0;
     //double pos_x = parts.motorPos(hardwareMap)[1]; //x position
     //double pos_y = parts.motorPos(hardwareMap)[3]; // y position
-
+    BNO055IMU imu;
+    Orientation angles;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -44,17 +51,26 @@ public class Auton extends LinearOpMode {
         All_Parts parts = new All_Parts();
 
         parts.init(hardwareMap);
-
+        telemetry.addData("armpos", parts.getArmPos());
+        telemetry.update();
         waitForStart();
         double startuptime = runtime.milliseconds();
         while (opModeIsActive()) {
             telemetry.addData("autonomous mode enabled", autoEnabled);
             telemetry.addData("has initialized", hasInit);
             pos_y = parts.posY();
+            pos_x = parts.posX();
+            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+            parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+            imu = hardwareMap.get(BNO055IMU.class,  "imu");
+            imu.initialize(parameters);
             if (autoEnabled) {
                 double ms = runtime.milliseconds() - startuptime;
                 //int stage = 0;
                 //int stage = (int) Math.round(ms / 3000) - 1; //required for async execution. dont remove
+                angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+                telemetry.addData("direction", angles.firstAngle);
+                telemetry.addData("armpos", parts.getArmPos());
                 telemetry.addData("stage", stage);
                 telemetry.addData("Pos_y", pos_y);
                 telemetry.addData("milliseconds,",ms);
@@ -62,14 +78,14 @@ public class Auton extends LinearOpMode {
                 switch (stage) {
                     case "init complete":
                         arm = 1;
-                        if(parts.getArmPos()>2000){
+                        if(parts.getArmPos() > 700){
                             stage ="arm weg";
                         }
                         break;
                     case "arm weg":  //test
                         slidesPos = 3750;
                         vy = -1;
-                        arm=0;
+                        arm = -1;
                         if (-pos_y>12000){stage="at location";}
                         break;
                     case "at location":
@@ -83,23 +99,35 @@ public class Auton extends LinearOpMode {
                         sampleStorage = 0.5;
                         if (ms>1000){
                             stage = "sample scored";
-
                         }
                         break;
                     case "sample scored":
-                        vy = 1;
-                        if(pos_y>=0){
+                        vx = 1;
+                        sampleStorage = 0.9;
+                        if(pos_x>=10000){
                             stage = "retreat complete";
                             startuptime = runtime.milliseconds();
                         }
                     case "retreat complete":
-                        sampleStorage = 0.9;
-                        vy = 0;
-                        if (ms>2000){stage = "servo retracted";}
-                        break;
-                    case "servo retracted":
+                        vx = 0;
                         slidesPos = 0;
+                        va = 1;
+                        if (angles.firstAngle > 89){stage = "driven to sample";}
                         break;
+                    case "driven to sample":
+                        va = 0;
+                        arm = 1;
+                        if (parts.getArmPos() > 600) {
+                            stage = "arm down";
+                            startuptime = runtime.milliseconds();
+                        }
+                        break;
+                    case "arm down":
+                        arm = -1;
+                        intakeClaw = 0;
+                        if (ms > 500) {stage = "sample picked up";}
+                        break;
+
 
 
 
@@ -239,7 +267,7 @@ public class Auton extends LinearOpMode {
                 parts.drive0(vy, vx, va, 3);
                 //parts.setSlidesPower(slides);
                 parts.setSlidePosition(slidesPos);
-                parts.setArmPower(arm);
+                parts.setArmPower(arm / 2);
                 parts.sampleBakje(sampleStorage);
                 parts.intakeClaw(intakeClaw);
                 parts.setIntakeOrientation(intakeOrientation);
@@ -254,4 +282,3 @@ public class Auton extends LinearOpMode {
         }
     }
 }
-
