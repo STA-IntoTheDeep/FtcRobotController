@@ -36,7 +36,7 @@ public class Auton extends LinearOpMode {
     String stage = "init complete";
     double slides;
     double slidesPos = 0;
-    double arm;
+    double arm=0;
     double sampleStorage = 0.95 ;
     double intakeClaw = 0;
     double intakeOrientation = 0;
@@ -55,7 +55,9 @@ public class Auton extends LinearOpMode {
         telemetry.update();
         waitForStart();
         double startuptime = runtime.milliseconds();
+        //double armPos=0;
         while (opModeIsActive()) {
+            double armPos = parts.getArmPos();
             telemetry.addData("autonomous mode enabled", autoEnabled);
             telemetry.addData("has initialized", hasInit);
             pos_y = parts.posY();
@@ -70,24 +72,29 @@ public class Auton extends LinearOpMode {
                 //int stage = (int) Math.round(ms / 3000) - 1; //required for async execution. dont remove
                 angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
                 telemetry.addData("direction", angles.firstAngle);
-                telemetry.addData("armpos", parts.getArmPos());
+                telemetry.addData("armpos", armPos);
                 telemetry.addData("stage", stage);
                 telemetry.addData("Pos_y", pos_y);
                 telemetry.addData("milliseconds,",ms);
                 telemetry.addData("Slidespos", parts.getSlidesPos());
+                telemetry.addData("arm pos displacement",parts.getArmPosDisplacement());
+                //armPos+=100*arm;
                 switch (stage) {
                     case "init complete":
                         arm = 1;
-                        if(parts.getArmPos() > 700){
+                        if(armPos > 700){
                             stage ="arm weg";
+                            arm = 0;
                         }
                         break;
+
                     case "arm weg":  //test
                         slidesPos = 3750;
                         vy = -1;
-                        arm = -1;
-                        if (-pos_y>12000){stage="at location";}
+                        arm = 0;
+                        if (-pos_y>8000){stage="at location";}
                         break;
+
                     case "at location":
                         vy = 0;
                         if (parts.getSlidesPos()>3500){
@@ -95,12 +102,14 @@ public class Auton extends LinearOpMode {
                             startuptime = runtime.milliseconds();
                         }
                         break;
+
                     case "slides up":
                         sampleStorage = 0.5;
-                        if (ms>1000){
+                        if (ms>600){
                             stage = "sample scored";
                         }
                         break;
+
                     case "sample scored":
                         vx = 1;
                         sampleStorage = 0.9;
@@ -108,20 +117,24 @@ public class Auton extends LinearOpMode {
                             stage = "retreat complete";
                             startuptime = runtime.milliseconds();
                         }
+                        break;
+
                     case "retreat complete":
                         vx = 0;
                         slidesPos = 0;
                         va = 1;
                         if (angles.firstAngle > 89){stage = "driven to sample";}
                         break;
+
                     case "driven to sample":
                         va = 0;
                         arm = 1;
-                        if (parts.getArmPos() > 600) {
+                        if (armPos > 600) {
                             stage = "arm down";
                             startuptime = runtime.milliseconds();
                         }
                         break;
+
                     case "arm down":
                         arm = -1;
                         intakeClaw = 0;
@@ -156,97 +169,11 @@ public class Auton extends LinearOpMode {
                             stage = "first sample scored";
                         }
                         break;*/
-
-
-
-
-
-                    /*case "first sample scored":
-                        va = 1;
-                        sampleStorage = 0.95;
-                        slides = 0;
-                        if (pos_y > -14000) {
-                            stage = "draai naar samples";
-                        }
-                        break;
-                    case "draai naar samples":
-                        va = 0;
-                        vy = 1;
-                        intakeOrientation = 1;
-                        intakeClaw = 0;
-                        if (pos_y > -5000) {
-                            stage = "bij first sample";
-                            startuptime = ms;
-                            ms = startuptime - ms;
-                        }
-                        break;
-                    case "bij first sample":
-                        arm = -1;
-                        if (ms > 500) {
-                            stage = "arm naar buiten";
-                        }
-                        break;
-                    case "arm naar buiten":
-                        arm = 0;
-                        intakeClaw = 1;
-                        slides = -0.9;
-                        if (parts.getSlidesPos() < 300) {
-                            stage = "slides naar beneden";
-                            startuptime = ms;
-                            ms = startuptime - ms;
-                        }
-                        break;
-                    case "slides naar beneden":
-                        arm = 1;
-                        intakeOrientation = 0;
-                        slides = 0;
-                        if (ms > 1300) {
-                            stage = "klaar voor sample drop";
-                        }
-                        break;
-                    case "klaar voor sample drop":
-                        intakeClaw = 0;
-                        if (ms > 2000) {
-                            stage = "sample dropped";
-                        }
-                        break;
-                    case "sample dropped":
-                        vx = 1;
-                        if (ms > 2500) {
-                            stage = "naar zijkant";
-                        }
-                        break;
-                    case "naar zijkant":
-                        if (ms < 3800){
-                            arm = -1;
-                        }
-                        else {
-                            arm = 0;
-                        }
-                        slides = 1;
-                        if ((parts.getSlidesPos() > 3500) && (ms > 3800)) {
-                        stage = "slides omhoog met tweede sample";
-                        startuptime = ms;
-                        ms = startuptime - ms;
-                        }
-                        break;
-                    case "slides omhoog met tweede sample":
-                        slides = 0.3;
-                        sampleStorage = 0;
-                        if (ms > 1000) {
-                            stage = "second sample scored";
-                        }
-                        break;
-                    case "done":
-                        vx = 0;
-                        vy = 0;
-                        va = 0;
-                        slides = 0;
-                        break;*/
                     default:
                         vy = 0;
                         vx = 0;
                         va = 0;
+                        arm = 0;
                         break;
                 }
 
@@ -267,16 +194,14 @@ public class Auton extends LinearOpMode {
                 parts.drive0(vy, vx, va, 3);
                 //parts.setSlidesPower(slides);
                 parts.setSlidePosition(slidesPos);
-                parts.setArmPower(arm / 2);
+                parts.setArmPower(arm);
                 parts.sampleBakje(sampleStorage);
                 parts.intakeClaw(intakeClaw);
                 parts.setIntakeOrientation(intakeOrientation);
-            }/* else if (hasInit) {
-                leftFront.setPower(fl / 1000);
-                rightFront.setPower(fr / 1000);
-                rightBack.setPower(br / 1000);
-                leftBack.setPower(bl / 1000);
-            }*/
+
+
+                telemetry.addData("arm power",arm);
+            }
             telemetry.addData("slidespower", parts.slidespower());
             telemetry.update();
         }

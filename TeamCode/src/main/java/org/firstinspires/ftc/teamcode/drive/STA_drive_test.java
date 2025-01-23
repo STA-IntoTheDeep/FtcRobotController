@@ -1,35 +1,43 @@
 package org.firstinspires.ftc.teamcode.drive;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.robotParts_new.All_Parts;
-import org.firstinspires.ftc.teamcode.robotParts_new.Arm_Two_new;
-import org.firstinspires.ftc.teamcode.robotParts_new.Arm_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Drivetrain_new;
-import org.firstinspires.ftc.teamcode.robotParts_new.Onderdelen_new;
 
-@TeleOp(name = "STA_startingpos_setup", group = "TeleOp")
+@TeleOp(name = "STAdrive_test", group = "TeleOp")
 //Naam van project
-public class STA_startingpos_setup extends LinearOpMode {
+public class STA_drive_test extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();                                //Slaat op hoe lang de robot is geinitialiseerd
-
     Drivetrain_new drivetrain = new Drivetrain_new();
-    Arm_new arm = new Arm_new();
-    Arm_Two_new arm2 = new Arm_Two_new();
-    Onderdelen_new onderdelen = new Onderdelen_new();
+    //Arm_new arm = new Arm_new();
+    //Arm_Two_new arm2 = new Arm_Two_new();
+    //Onderdelen_new onderdelen = new Onderdelen_new();
     All_Parts parts = new All_Parts();                                      //Roept de onderdelen aan uit de geïmporteerde map
+    BNO055IMU imu;
+    Orientation angles;
 
     @Override
     public void runOpMode() throws InterruptedException {
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        imu = hardwareMap.get(BNO055IMU.class,  "imu");
+        imu.initialize(parameters);
         drivetrain.init(hardwareMap);
         parts.init(hardwareMap);
         //arm.initArm(hardwareMap);
         //onderdelen.init(hardwareMap);
         //arm2.initArm2(hardwareMap);
+        String stage = "bij basket";
         double ms;
-        double ms_difference = 0;
+        double ms_difference = runtime.milliseconds();
         boolean toggleSpeed;
         boolean toggleBakje;
         boolean toggleClaw;
@@ -44,6 +52,14 @@ public class STA_startingpos_setup extends LinearOpMode {
         boolean armInputAllowed1 = true;
         boolean armInputAllowed2 = true;
         boolean armInputAllowed = true;
+        boolean toggleArmMoveA = false;
+        boolean armMoveAllowedA = true;
+        boolean armMovementA = false;
+        boolean toggleArmMoveB = false;
+        boolean armMoveAllowedB = true;
+        boolean armMovementB = false;
+        double autony = 0;
+        double autonx = 0;
         waitForStart();
         if (isStopRequested()) return;
         double bakjeServoPos = 0.95;
@@ -53,25 +69,27 @@ public class STA_startingpos_setup extends LinearOpMode {
         double trueArmPower = 0;
         double intakeOrientation = 0;
         double speed = 0.6;
-        ms = runtime.milliseconds() - ms_difference;
-        while (opModeIsActive()) {                                   //Loop van het rijden van de robot
-            double y = -gamepad1.left_stick_x;                       //Koppelt geactiveerde knop op controller aan variabele
+        while (opModeIsActive()) {//Loop van het rijden van de robot
+            double y = -gamepad1.left_stick_x;
             double x = gamepad1.left_stick_y;
             double rotate = 0.6 * gamepad1.right_stick_x;
-            double armPower = -gamepad2.left_stick_y;
+            double armPower = 0.7 * -gamepad2.left_stick_y;
             double podX = parts.posX();
             double podY = parts.posY();
-            double armPos1 = 100;
-            double armPos2 = 1050;
+            double armPos1 = 300;
+            double armPos2 = 950;
             double slidespower = -gamepad2.right_stick_y;
             double slidePos1 = 0;
             double slidePos2 = 3400;
             double slidePosVariation = 100;
             double rotation = parts.posY() - parts.posY2();
+            ms = runtime.milliseconds() - ms_difference;
             toggleSpeed = gamepad1.b;
             toggleBakje = gamepad2.right_bumper;
             toggleClaw = gamepad2.left_bumper;
             toggleIntakeOrientation = gamepad2.dpad_up;
+            toggleArmMoveA = gamepad2.a;
+            toggleArmMoveB = gamepad2.b;
 
             //Toggle position of bakje if button is pressed (bakjemovementallowed makes sure one click only toggles once)
             if (toggleBakje && bakjeMovementAllowed) {
@@ -134,34 +152,54 @@ public class STA_startingpos_setup extends LinearOpMode {
             }
 
             //set limits for arm
-            if ((((parts.getArmPos() <= 1000000000) || (armPower <= 0)) && ((parts.getArmPos() >= -100000000) || (armPower >= 0))) || gamepad2.back) {
+            if ((((parts.getArmPos() <= 1050) || (armPower < 0)) && ((parts.getArmPos() >= 400) || (armPower > 0))) || gamepad2.back) {
                 trueArmPower = armPower;
             }
 
-            //auto arm
-            if (gamepad2.a) {
+            //toggle voor arm position 1
+            if (toggleArmMoveA && armMoveAllowedA) {
+                armMovementA = !armMovementA;
+                armMoveAllowedA = false;
+            } else if (!toggleArmMoveA) {
+                armMoveAllowedA = true;
+            }
+
+            //move arm if allowed to drop position
+            if (armMovementA) {
                 intakeOrientation = 0.7;
                 servoRotation = 0.75;
                 if (armPos1 < parts.getArmPos()) {
                     trueArmPower = -1;
-                } else {
+                    ms_difference = runtime.milliseconds();
+                } else if (ms > 500){
                     clawServopos = 0;
+                    armMovementA = false;
                 }
             }
 
-            //auto arm? idk wat dit doet
-            if ((gamepad2.b)) {
+            //toggle voor arm position 2
+            if (toggleArmMoveB && armMoveAllowedB) {
+                armMovementB = !armMovementB;
+                armMoveAllowedB = false;
+            } else if (!toggleArmMoveB) {
+                armMoveAllowedB = true;
+            }
+
+            //move arm if allowed to pickup position
+            if ((armMovementB)) {
                 intakeOrientation = 0;
                 if (armPos2 > parts.getArmPos()) {
                     clawServopos = 0;
                     trueArmPower = 1;
+                } else {
+                    armMovementB = false;
                 }
             }
 
             //set limits for slides
             if (((slidesInputAllowed1) && (slidesInputAllowed2)) || gamepad2.back) {
                 trueSlidespower = 0;
-                if ((((parts.getSlidesPos() <= 10000000) || (slidespower <= 0)) && ((parts.getSlidesPos() >= -1000000000) || (slidespower >= 0))) || gamepad2.back) {
+                if ((((parts.getSlidesPos() <= 3400) || (slidespower <= 0)) && ((parts.getSlidesPos() >= -1000) || (slidespower >= 0))) || gamepad2.back) {
                     trueSlidespower = slidespower;
                 }
                 slidesInputAllowed1 = true;
@@ -193,20 +231,56 @@ public class STA_startingpos_setup extends LinearOpMode {
             } else {
                 slidesInputAllowed2 = true;
             }
+            if (gamepad1.x ){
+                switch (stage) {
+                    case "bij basket":
+                        autonx = -1;
+                        if (parts.posX() < -1000000){
+                            stage = "x bij submersible";
+                        }
+                    case "x bij submersible":
+                        autony = 1;
+                        if (parts.posX() > 1000000){
+                            stage = "bij submersible";
+                        }
+                }
+            } else if (gamepad1.y) {
+                switch (stage) {
+                    case "bij submersible":
+                        autony = -1;
+                        if (parts.posY() < -1000000){
+                            stage = "x bij bakje";
+                        }
+                    case "x bij bakje":
 
+                        autonx = 1;
+                        if (parts.posX() > 1000000){
+                            stage = "bij bakje";
+                        }
+                }
+            }
             parts.servoRotation(servoRotation);
             parts.sampleBakje(bakjeServoPos);
             parts.intakeClaw(clawServopos);
             parts.setIntakeOrientation(intakeOrientation);
-            parts.setArmPower(trueArmPower / 1.5);
+            parts.setArmPower(trueArmPower);
 
-            drivetrain.drive(-x, -y, -rotate, speed);
+            if (gamepad1.x || gamepad1.y) {
+                drivetrain.drive(autonx, autony, -rotate, speed);
+            } else {
+                drivetrain.drive(-x, -y, -rotate, speed);
+            }
+
 
             parts.setSlidesPower(trueSlidespower);
+            angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            telemetry.addData("direction", angles.firstAngle);
+            //telemetry.addData("roll", angles.secondAngle);
+            //telemetry.addData("pitch", angles.thirdAngle);
             telemetry.addData("slidesPos", parts.getSlidesPos());
-            telemetry.addData("rotation", rotation);
             telemetry.addData("servoRotatePos", servoRotation);
             telemetry.addData("ypos", podY);
+            telemetry.addData("xpos", podX);
             telemetry.addData("intakeOrientation", intakeOrientation);
             telemetry.addData("speed", speed);
             telemetry.addData("armpos", parts.getArmPos());

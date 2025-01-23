@@ -171,7 +171,7 @@ public class STA_drive_best extends LinearOpMode {
                 if (armPos1 < parts.getArmPos()) {
                     trueArmPower = -1;
                     ms_difference = runtime.milliseconds();
-                } else if (ms > 300){
+                } else if (ms > 500){
                     clawServopos = 0;
                     armMovementA = false;
                 }

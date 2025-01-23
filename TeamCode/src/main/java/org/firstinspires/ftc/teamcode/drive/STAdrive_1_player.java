@@ -60,7 +60,6 @@ public class STAdrive_1_player extends LinearOpMode {
         double trueArmPower = 0;
         double intakeOrientation = 0;
         double speed = 0.6;
-        ms = runtime.milliseconds() - ms_difference;
         while (opModeIsActive()) {                                   //Loop van het rijden van de robot
             double y = -gamepad1.left_stick_x;                       //Koppelt geactiveerde knop op controller aan variabele
             double x = gamepad1.left_stick_y;
@@ -81,6 +80,7 @@ public class STAdrive_1_player extends LinearOpMode {
             toggleIntakeOrientation = gamepad1.dpad_up;
             toggleArmMoveA = gamepad1.a;
             toggleArmMoveB = gamepad1.b;
+            ms = runtime.milliseconds() - ms_difference;
 
             //Toggle position of bakje if button is pressed (bakjemovementallowed makes sure one click only toggles once)
             if (toggleBakje && bakjeMovementAllowed) {
@@ -135,17 +135,17 @@ public class STAdrive_1_player extends LinearOpMode {
 
             //Makes controller1 able to control arm in case gamepad2 doesnt work anymore
             if ((armPower == 0) && (gamepad1.dpad_left)) {
-                trueArmPower = -1;
+                trueArmPower = -0.5;
             } else if ((armPower == 0) && (gamepad1.dpad_right)) {
-                trueArmPower = 1;
+                trueArmPower = 0.5;
             } else {
                 trueArmPower = armPower;
             }
 
             //set limits for arm
-            if ((((parts.getArmPos() <= 1100) || (armPower < 0)) && ((parts.getArmPos() >= 400) || (armPower > 0))) || gamepad1.back) {
+            /*if ((((parts.getArmPos() <= 1100) || (armPower < 0)) && ((parts.getArmPos() >= 400) || (armPower > 0))) || gamepad1.back) {
                 trueArmPower = armPower;
-            }
+            }*/
 
             //toggle voor arm position 1
             if (toggleArmMoveA && armMoveAllowedA) {
@@ -162,7 +162,7 @@ public class STAdrive_1_player extends LinearOpMode {
                 if (armPos1 < parts.getArmPos()) {
                     trueArmPower = -1;
                     ms_difference = runtime.milliseconds();
-                } else if (ms > 300){
+                } else if (ms > 500){
                     clawServopos = 0;
                     armMovementA = false;
                 }

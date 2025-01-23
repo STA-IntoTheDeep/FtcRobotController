@@ -65,6 +65,7 @@ public class All_Parts {
         posyOffset = lf.getCurrentPosition();
     }
 
+    public double getArmPosDisplacement(){return armPosDisplacement;};
 
     public void servo0(int which, double pos) {
         servo[which].setPosition(pos);
@@ -103,7 +104,7 @@ public class All_Parts {
 
         lf.setPower(leftFrontPower / maxPower);
         rf.setPower(-rightFrontPower / maxPower);
-        rb.setPower(-1 * -rightRearPower / maxPower);            //-- omdat gears
+        rb.setPower(-rightRearPower / maxPower);
         lb.setPower(leftRearPower / maxPower);
     }
 
