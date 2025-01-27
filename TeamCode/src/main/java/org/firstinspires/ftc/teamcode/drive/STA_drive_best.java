@@ -10,10 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.robotParts_new.All_Parts;
-import org.firstinspires.ftc.teamcode.robotParts_new.Arm_Two_new;
-import org.firstinspires.ftc.teamcode.robotParts_new.Arm_new;
 import org.firstinspires.ftc.teamcode.robotParts_new.Drivetrain_new;
-import org.firstinspires.ftc.teamcode.robotParts_new.Onderdelen_new;
 
 @TeleOp(name = "STAdrive_best", group = "TeleOp")
 //Naam van project
@@ -31,7 +28,7 @@ public class STA_drive_best extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        imu = hardwareMap.get(BNO055IMU.class,  "imu");
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
         drivetrain.init(hardwareMap);
         parts.init(hardwareMap);
@@ -142,7 +139,7 @@ public class STA_drive_best extends LinearOpMode {
                 clawRotationAllowed = true;
             }
 
-            //Makes controller1 able to control arm in case gamepad2 doesnt work anymore
+            //Makes gamepad1 able to control arm in case gamepad2 doesnt work anymore
             if ((armPower == 0) && (gamepad1.left_bumper)) {
                 trueArmPower = -1;
             } else if ((armPower == 0) && (gamepad1.right_bumper)) {
@@ -171,7 +168,7 @@ public class STA_drive_best extends LinearOpMode {
                 if (armPos1 < parts.getArmPos()) {
                     trueArmPower = -1;
                     ms_difference = runtime.milliseconds();
-                } else if (ms > 500){
+                } else if (ms > 500) {
                     clawServopos = 0;
                     armMovementA = false;
                 }

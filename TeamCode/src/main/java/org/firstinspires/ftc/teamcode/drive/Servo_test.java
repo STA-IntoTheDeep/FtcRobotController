@@ -12,16 +12,13 @@ import org.firstinspires.ftc.teamcode.robotParts_new.Drivetrain_new;
 //Naam van project
     public class Servo_test extends LinearOpMode {
         private ElapsedTime runtime = new ElapsedTime();                                //Slaat op hoe lang de robot is geinitialiseerd
-
         Drivetrain_new drivetrain = new Drivetrain_new();
-
         All_Parts parts = new All_Parts();                                      //Roept de onderdelen aan uit de geïmporteerde map
 
         @Override
         public void runOpMode() throws InterruptedException {
             drivetrain.init(hardwareMap);
             parts.init(hardwareMap);
-
 
             waitForStart();
             if (isStopRequested()) return;
@@ -30,8 +27,9 @@ import org.firstinspires.ftc.teamcode.robotParts_new.Drivetrain_new;
             double intakeRotation = 0;
             double intakeOrientation = 0;
 
+            while (opModeIsActive()) { //Loop van het rijden van de robot
+                double rotation = parts.posY() - parts.posY2();
 
-            while (opModeIsActive()) {                                  //Loop van het rijden van de robot
                 if(gamepad1.x) {
                     bakjeServoPos = 0;
                 } else if (gamepad1.y){
@@ -60,11 +58,6 @@ import org.firstinspires.ftc.teamcode.robotParts_new.Drivetrain_new;
                 parts.sampleBakje(bakjeServoPos);
                 parts.intakeClaw(clawServopos);
                 parts.setIntakeOrientation(intakeOrientation);
-
-
-
-
-                double rotation = parts.posY() - parts.posY2();
 
                 telemetry.addData("slidesPos", parts.getSlidesPos());
                 telemetry.addData("rotation", rotation);

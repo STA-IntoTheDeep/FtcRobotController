@@ -35,11 +35,6 @@ public class All_Parts {
     Servo[] servo = {servo0};
 
     public void init(HardwareMap map) {
-        /*
-        for (int a = 0; a <= (c.servos-1); a++) {
-            servo[a] = map.get(Servo.class, "servo" + a);
-        }
-         */
         slides = map.get(DcMotorEx.class, "slides");
         //rollerintake = map.get(CRServo.class, "intake");
         sampleBakje = map.get(Servo.class, "bakje");
@@ -65,7 +60,9 @@ public class All_Parts {
         posyOffset = lf.getCurrentPosition();
     }
 
-    public double getArmPosDisplacement(){return armPosDisplacement;};
+    public double getArmPosDisplacement(){
+        return armPosDisplacement;
+    }
 
     public void servo0(int which, double pos) {
         servo[which].setPosition(pos);
@@ -89,7 +86,10 @@ public class All_Parts {
     public int posX() {
         return rf.getCurrentPosition();
     }
-    public int posY2(){return lb.getCurrentPosition();}
+    public int posY2(){
+        return lb.getCurrentPosition();
+    }
+
     public void drive0(double forward, double right, double rotate, double power) {
         double leftFrontPower = -forward - right + rotate;
         double rightFrontPower = -forward + right - rotate;
@@ -120,20 +120,34 @@ public class All_Parts {
         rollerintake.setPower(power);
     }*/
 
-    public void sampleBakje(double pos) {sampleBakje.setPosition(pos);}
+    public void sampleBakje(double pos) {
+        sampleBakje.setPosition(pos);
+    }
 
-    public void intakeClaw(double pos) {intakeClaw.setPosition(pos);}
+    public void intakeClaw(double pos) {
+        intakeClaw.setPosition(pos);
+    }
 
-    public void servoRotation(double pos) {servoRotation.setPosition(pos);}
-    public void setIntakeOrientation(double pos) {intakeOrientation.setPosition(pos);}
+    public void servoRotation(double pos) {
+        servoRotation.setPosition(pos);
+    }
+
+    public void setIntakeOrientation(double pos) {
+        intakeOrientation.setPosition(pos);
+    }
+
     public void setSlidesPower(double power) {
         slides.setPower(power);
     }
+
     public void setSlidePosition(double pos){
         slides.setPower((Math.abs(slides.getCurrentPosition()-slidePosDisplacement-pos+500)-Math.abs(slides.getCurrentPosition()-slidePosDisplacement-pos-500))*-0.0009);
-
     }
-    public double slidespower(){return slides.getPower();}
+
+    public double slidespower(){
+        return slides.getPower();
+    }
+
     public void setArmPower(double power) {
         arm.setPower(power);
     }
@@ -141,9 +155,8 @@ public class All_Parts {
     public int getSlidesPos(){
         return slides.getCurrentPosition()-slidePosDisplacement;
     }
+
     public int getArmPos(){
         return arm.getCurrentPosition()-armPosDisplacement;
     }
 }
-
-

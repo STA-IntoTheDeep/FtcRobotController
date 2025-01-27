@@ -60,6 +60,8 @@ public class STA_drive_test extends LinearOpMode {
         boolean armMovementB = false;
         double autony = 0;
         double autonx = 0;
+        double autonrotate = 0;
+        double autonspeed = 0.6;
         waitForStart();
         if (isStopRequested()) return;
         double bakjeServoPos = 0.95;
@@ -235,11 +237,13 @@ public class STA_drive_test extends LinearOpMode {
                 switch (stage) {
                     case "bij basket":
                         autonx = -1;
+                        autonrotate = 0;
                         if (parts.posX() < -1000000){
                             stage = "x bij submersible";
                         }
                     case "x bij submersible":
                         autony = 1;
+                        autonrotate = 0;
                         if (parts.posX() > 1000000){
                             stage = "bij submersible";
                         }
@@ -248,12 +252,14 @@ public class STA_drive_test extends LinearOpMode {
                 switch (stage) {
                     case "bij submersible":
                         autony = -1;
+                        autonrotate = 0;
                         if (parts.posY() < -1000000){
                             stage = "x bij bakje";
                         }
                     case "x bij bakje":
 
                         autonx = 1;
+                        autonrotate = 0;
                         if (parts.posX() > 1000000){
                             stage = "bij bakje";
                         }
@@ -266,7 +272,7 @@ public class STA_drive_test extends LinearOpMode {
             parts.setArmPower(trueArmPower);
 
             if (gamepad1.x || gamepad1.y) {
-                drivetrain.drive(autonx, autony, -rotate, speed);
+                drivetrain.drive(autonx, autony, autonrotate, autonspeed);
             } else {
                 drivetrain.drive(-x, -y, -rotate, speed);
             }
