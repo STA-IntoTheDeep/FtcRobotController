@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.robotParts_new;
 
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -14,6 +13,7 @@ class partcount {
 public class All_Parts {
 
     private Servo servo0;
+    int posxOffset;
     int posyOffset;
     private DcMotorEx lf;
     private DcMotorEx rf;
@@ -27,10 +27,10 @@ public class All_Parts {
     private Servo sampleBakje;
     private Servo intakeClaw;
     private Servo servoRotation;
-    private Servo intakeOrientation;
+    private Servo intakeTurn;
     int slidePosDisplacement;
     int armPosDisplacement;
-
+    double maxPower;
     partcount c = new partcount();
     Servo[] servo = {servo0};
 
@@ -39,7 +39,7 @@ public class All_Parts {
         //rollerintake = map.get(CRServo.class, "intake");
         sampleBakje = map.get(Servo.class, "bakje");
         intakeClaw = map.get(Servo.class, "Claw");
-        intakeOrientation = map.get(Servo.class,"intakeTurn");
+        intakeTurn = map.get(Servo.class,"intakeTurn");
         servoRotation = map.get(Servo.class, "servoRotation");
         lf = map.get(DcMotorEx.class, "left_front");
         rf = map.get(DcMotorEx.class, "right_front");
@@ -58,6 +58,7 @@ public class All_Parts {
         //arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //arm2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         posyOffset = lf.getCurrentPosition();
+        posxOffset = rf.getCurrentPosition();
     }
 
     public double getArmPosDisplacement(){
@@ -84,7 +85,7 @@ public class All_Parts {
     }
 
     public int posX() {
-        return rf.getCurrentPosition();
+        return rf.getCurrentPosition()-posxOffset;
     }
     public int posY2(){
         return lb.getCurrentPosition();
@@ -95,8 +96,8 @@ public class All_Parts {
         double rightFrontPower = -forward + right - rotate;
         double rightRearPower = -forward - right - rotate;
         double leftRearPower = -forward + right + rotate;
-        double maxPower = power;
 
+        maxPower = power;
         maxPower = Math.max(maxPower, Math.abs(leftFrontPower));
         maxPower = Math.max(maxPower, Math.abs(rightFrontPower));
         maxPower = Math.max(maxPower, Math.abs(rightRearPower));
@@ -104,7 +105,7 @@ public class All_Parts {
 
         lf.setPower(leftFrontPower / maxPower);
         rf.setPower(-rightFrontPower / maxPower);
-        rb.setPower(-rightRearPower / maxPower);
+        rb.setPower(-rightRearPower / maxPower);            //-- omdat gears
         lb.setPower(leftRearPower / maxPower);
     }
 
@@ -132,8 +133,8 @@ public class All_Parts {
         servoRotation.setPosition(pos);
     }
 
-    public void setIntakeOrientation(double pos) {
-        intakeOrientation.setPosition(pos);
+    public void setIntakeTurn(double pos) {
+        intakeTurn.setPosition(pos);
     }
 
     public void setSlidesPower(double power) {
@@ -141,7 +142,8 @@ public class All_Parts {
     }
 
     public void setSlidePosition(double pos){
-        slides.setPower((Math.abs(slides.getCurrentPosition()-slidePosDisplacement-pos+500)-Math.abs(slides.getCurrentPosition()-slidePosDisplacement-pos-500))*-0.0009);
+        double slidesCurrentPosition = slides.getCurrentPosition();
+        slides.setPower((Math.abs(slidesCurrentPosition-slidePosDisplacement-pos+1000)-Math.abs(slidesCurrentPosition-slidePosDisplacement-pos-1000))*-0.00045);
     }
 
     public double slidespower(){

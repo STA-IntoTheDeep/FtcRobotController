@@ -197,8 +197,8 @@ public class STA_startingpos_setup extends LinearOpMode {
             parts.servoRotation(servoRotation);
             parts.sampleBakje(bakjeServoPos);
             parts.intakeClaw(clawServopos);
-            parts.setIntakeOrientation(intakeOrientation);
-            parts.setArmPower(trueArmPower / 1.5);
+            parts.setIntakeTurn(intakeOrientation);
+            parts.setArmPower(trueArmPower);
 
             drivetrain.drive(-x, -y, -rotate, speed);
 

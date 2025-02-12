@@ -268,7 +268,7 @@ public class STA_drive_test extends LinearOpMode {
             parts.servoRotation(servoRotation);
             parts.sampleBakje(bakjeServoPos);
             parts.intakeClaw(clawServopos);
-            parts.setIntakeOrientation(intakeOrientation);
+            parts.setIntakeTurn(intakeOrientation);
             parts.setArmPower(trueArmPower);
 
             if (gamepad1.x || gamepad1.y) {

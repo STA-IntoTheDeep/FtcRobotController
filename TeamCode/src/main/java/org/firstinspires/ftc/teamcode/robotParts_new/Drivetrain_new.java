@@ -53,7 +53,7 @@ public class Drivetrain_new {
 
         leftFront.setPower(leftFrontPower / maxPower);
         rightFront.setPower(-rightFrontPower / maxPower);
-        rightBack.setPower(rightRearPower / maxPower);            //-- omdat gears
+        rightBack.setPower(-rightRearPower / maxPower);            //-- omdat gears
         leftBack.setPower(leftRearPower / maxPower);
     }
 

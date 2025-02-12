@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.drive;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -226,7 +225,7 @@ public class STAdrive_1_player extends LinearOpMode {
             parts.servoRotation(servoRotation);
             parts.sampleBakje(bakjeServoPos);
             parts.intakeClaw(clawServopos);
-            parts.setIntakeOrientation(intakeOrientation);
+            parts.setIntakeTurn(intakeOrientation);
             parts.setArmPower(trueArmPower);
 
             drivetrain.drive(-x, -y, -rotate, speed);

@@ -59,7 +59,7 @@ public class STA_drive_best extends LinearOpMode {
         boolean armMovementB = false;
         waitForStart();
         if (isStopRequested()) return;
-        double bakjeServoPos = 0.95;
+        double bakjeServoPos = 1;
         double clawServopos = 0;
         double servoRotation = 0.5;
         double trueSlidespower = 0;
@@ -91,8 +91,8 @@ public class STA_drive_best extends LinearOpMode {
             //Toggle position of bakje if button is pressed (bakjemovementallowed makes sure one click only toggles once)
             if (toggleBakje && bakjeMovementAllowed) {
                 if (bakjeServoPos == 0.5) {
-                    bakjeServoPos = 0.95;
-                } else if (bakjeServoPos == 0.95) {
+                    bakjeServoPos = 1;
+                } else if (bakjeServoPos == 1) {
                     bakjeServoPos = 0.5;
                 }
                 bakjeMovementAllowed = false;
@@ -122,7 +122,7 @@ public class STA_drive_best extends LinearOpMode {
 
             //Toggle intake orientation if button is pressed (intakeorientationmovementallowed makes sure one click only toggles once)
             if (toggleIntakeOrientation && intakeOrientationMovementAllowed) {
-                intakeOrientation = -intakeOrientation + 0.7; //switch tussen 0.7 en 0
+                intakeOrientation = -intakeOrientation + 0.85; //switch tussen 0.85 en 0
                 intakeOrientationMovementAllowed = false;
             } else if (!toggleIntakeOrientation) {
                 intakeOrientationMovementAllowed = true;
@@ -232,7 +232,7 @@ public class STA_drive_best extends LinearOpMode {
             parts.servoRotation(servoRotation);
             parts.sampleBakje(bakjeServoPos);
             parts.intakeClaw(clawServopos);
-            parts.setIntakeOrientation(intakeOrientation);
+            parts.setIntakeTurn(intakeOrientation);
             parts.setArmPower(trueArmPower);
 
             drivetrain.drive(-x, -y, -rotate, speed);

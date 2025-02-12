@@ -57,7 +57,7 @@ import org.firstinspires.ftc.teamcode.robotParts_new.Drivetrain_new;
                 parts.servoRotation(intakeRotation);
                 parts.sampleBakje(bakjeServoPos);
                 parts.intakeClaw(clawServopos);
-                parts.setIntakeOrientation(intakeOrientation);
+                parts.setIntakeTurn(intakeOrientation);
 
                 telemetry.addData("slidesPos", parts.getSlidesPos());
                 telemetry.addData("rotation", rotation);
