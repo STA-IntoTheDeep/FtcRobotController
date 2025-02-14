@@ -143,7 +143,7 @@ public class All_Parts {
 
     public void setSlidePosition(double pos){
         double slidesCurrentPosition = slides.getCurrentPosition();
-        slides.setPower((Math.abs(slidesCurrentPosition-slidePosDisplacement-pos+1000)-Math.abs(slidesCurrentPosition-slidePosDisplacement-pos-1000))*-0.00045);
+        slides.setPower((Math.abs(slidesCurrentPosition-slidePosDisplacement-pos+1000)-Math.abs(slidesCurrentPosition-slidePosDisplacement-pos-1000))*-0.0005);
     }
 
     public double slidespower(){

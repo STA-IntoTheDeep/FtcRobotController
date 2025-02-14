@@ -59,7 +59,7 @@ public class STA_drive_best extends LinearOpMode {
         boolean armMovementB = false;
         waitForStart();
         if (isStopRequested()) return;
-        double bakjeServoPos = 1;
+        double bakjeServoPos = 0.9;
         double clawServopos = 0;
         double servoRotation = 0.5;
         double trueSlidespower = 0;
@@ -70,11 +70,11 @@ public class STA_drive_best extends LinearOpMode {
             double y = -gamepad1.left_stick_x;                       //Koppelt geactiveerde knop op controller aan variabele
             double x = gamepad1.left_stick_y;
             double rotate = 0.6 * gamepad1.right_stick_x;
-            double armPower = 0.7 * -gamepad2.left_stick_y;
+            double armPower = 0.7 * gamepad2.left_stick_y;
             double podX = parts.posX();
             double podY = parts.posY();
-            double armPos1 = 300;
-            double armPos2 = 950;
+            double armPos1 = -225;
+            double armPos2 = -800;
             double slidespower = -gamepad2.right_stick_y;
             double slidePos1 = 0;
             double slidePos2 = 3400;
@@ -90,10 +90,10 @@ public class STA_drive_best extends LinearOpMode {
 
             //Toggle position of bakje if button is pressed (bakjemovementallowed makes sure one click only toggles once)
             if (toggleBakje && bakjeMovementAllowed) {
-                if (bakjeServoPos == 0.5) {
-                    bakjeServoPos = 1;
-                } else if (bakjeServoPos == 1) {
-                    bakjeServoPos = 0.5;
+                if (bakjeServoPos == 0.3) {
+                    bakjeServoPos = 0.9;
+                } else if (bakjeServoPos == 0.9) {
+                    bakjeServoPos = 0.3;
                 }
                 bakjeMovementAllowed = false;
             } else if (!toggleBakje) {
@@ -122,7 +122,7 @@ public class STA_drive_best extends LinearOpMode {
 
             //Toggle intake orientation if button is pressed (intakeorientationmovementallowed makes sure one click only toggles once)
             if (toggleIntakeOrientation && intakeOrientationMovementAllowed) {
-                intakeOrientation = -intakeOrientation + 0.85; //switch tussen 0.85 en 0
+                intakeOrientation = -intakeOrientation + 0.7; //switch tussen 0.85 en 0
                 intakeOrientationMovementAllowed = false;
             } else if (!toggleIntakeOrientation) {
                 intakeOrientationMovementAllowed = true;
@@ -149,9 +149,10 @@ public class STA_drive_best extends LinearOpMode {
             }
 
             //set limits for arm
-            if ((((parts.getArmPos() <= 1050) || (armPower < 0)) && ((parts.getArmPos() >= 400) || (armPower > 0))) || gamepad2.back) {
+            trueArmPower = armPower;
+            /*if ((((parts.getArmPos() <= 1050) || (armPower < 0)) && ((parts.getArmPos() >= 400) || (armPower > 0))) || gamepad2.back) {
                 trueArmPower = armPower;
-            }
+            }*/
 
             //toggle voor arm position 1
             if (toggleArmMoveA && armMoveAllowedA) {
@@ -164,12 +165,12 @@ public class STA_drive_best extends LinearOpMode {
             //move arm if allowed to drop position
             if (armMovementA) {
                 intakeOrientation = 0.7;
-                servoRotation = 0.75;
-                if (armPos1 < parts.getArmPos()) {
-                    trueArmPower = -1;
+                servoRotation = 1;
+                if (armPos1 > parts.getArmPos()) {
+                    trueArmPower = 1;
                     ms_difference = runtime.milliseconds();
-                } else if (ms > 500) {
-                    clawServopos = 0;
+                } else {
+                    trueArmPower = 0;
                     armMovementA = false;
                 }
             }
@@ -185,10 +186,11 @@ public class STA_drive_best extends LinearOpMode {
             //move arm if allowed to pickup position
             if ((armMovementB)) {
                 intakeOrientation = 0;
-                if (armPos2 > parts.getArmPos()) {
+                if (armPos2 < parts.getArmPos()) {
                     clawServopos = 0;
-                    trueArmPower = 1;
+                    trueArmPower = -1;
                 } else {
+                    trueArmPower = 0;
                     armMovementB = false;
                 }
             }
@@ -202,6 +204,7 @@ public class STA_drive_best extends LinearOpMode {
                 slidesInputAllowed1 = true;
                 slidesInputAllowed2 = true;
             }
+            trueSlidespower = slidespower;
 
             //Move slides if input allowed
             if (Math.abs(parts.getSlidesPos() - slidePos1) > slidePosVariation) {
