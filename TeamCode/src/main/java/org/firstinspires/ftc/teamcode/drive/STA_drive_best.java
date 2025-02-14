@@ -198,13 +198,13 @@ public class STA_drive_best extends LinearOpMode {
             //set limits for slides
             if (((slidesInputAllowed1) && (slidesInputAllowed2)) || gamepad2.back) {
                 trueSlidespower = 0;
-                if ((((parts.getSlidesPos() <= 3400) || (slidespower <= 0)) && ((parts.getSlidesPos() >= -1000) || (slidespower >= 0))) || gamepad2.back) {
+                if ((((parts.getSlidesPos() <= 9000) || (slidespower <= 0)) && ((parts.getSlidesPos() >= -500) || (slidespower >= 0))) || gamepad2.back) {
                     trueSlidespower = slidespower;
                 }
                 slidesInputAllowed1 = true;
                 slidesInputAllowed2 = true;
             }
-            trueSlidespower = slidespower;
+
 
             //Move slides if input allowed
             if (Math.abs(parts.getSlidesPos() - slidePos1) > slidePosVariation) {

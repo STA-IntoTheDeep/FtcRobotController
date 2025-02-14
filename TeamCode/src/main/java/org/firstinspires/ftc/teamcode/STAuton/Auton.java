@@ -104,7 +104,7 @@ public class Auton extends LinearOpMode {
                 switch (stage) {
 
                     case "init complete":  //test
-                        slidesPos = 10000;
+                        slidesPos = 8500;
                         vy = -1;
                         if (armPos <= -500){
                             arm = 0;
@@ -124,7 +124,7 @@ public class Auton extends LinearOpMode {
                         } else {
                             arm = -1;
                         }
-                        if (parts.getSlidesPos() > 9000) {
+                        if (parts.getSlidesPos() > 7350) {
                             stage = "slides up";
                             startuptime = runtime.milliseconds();
                         }
@@ -140,34 +140,17 @@ public class Auton extends LinearOpMode {
 
                     case "sample scored":
                         vx = -1;
-                        vy = -1;
+
                         sampleStorage = 0.9;
                         /*if (pos_x <= -10000 && pos_y >= -5000) {
                             stage = "retreat complete";
                         }*/
                         if (pos_x <= -15000) {
-                            stage = "retreat complete x";
-                            startuptime = runtime.milliseconds();
-                        }
-                        if (pos_y <= -21800) {
-                            stage = "retreat complete y";
+                            stage = "retreat complete";
                             startuptime = runtime.milliseconds();
                         }
 
-                        break;
 
-                    case "retreat complete x":
-                        vx = 0;
-                        if (pos_y <= -21800) {
-                            stage = "retreat complete";
-                        }
-                        break;
-
-                    case "retreat complete y":
-                        vy = 0;
-                        if (pos_x <= -15000) {
-                            stage = "retreat complete";
-                        }
                         break;
 
                     case "retreat complete":
@@ -192,7 +175,7 @@ public class Auton extends LinearOpMode {
                     case "arrived at sample 1":
                         vy=0;
                         arm= -1;
-                        if (armPos<= -900){
+                        if (armPos<= -825){
                             stage= "arm down";
                             startuptime= runtime.milliseconds();
                         }
@@ -201,7 +184,7 @@ public class Auton extends LinearOpMode {
                     case "arm down":
                         arm = 0;
                         intakeClaw = 1;
-                        if (ms > 1000 && parts.getSlidesPos() < 100) {
+                        if (ms > 1000 && parts.getSlidesPos() < 200) {
                             stage = "sample picked up";
                         }
                         break;
@@ -209,7 +192,7 @@ public class Auton extends LinearOpMode {
                         arm = 1;
                         intakeOrientation = 0.7;
                         servoRotation = 1;
-                        if (armPos  >= -200) {
+                        if (armPos  >= -250) {
                             stage = "arm at tray";
                             startuptime= runtime.milliseconds();
                         }
@@ -233,13 +216,13 @@ public class Auton extends LinearOpMode {
                             arm = -1;
                         }
                         intakeOrientation = 0;
-                        slidesPos = 10000;
-                        if (armPos  <= -500 && parts.getSlidesPos() > 9000) {
+                        slidesPos = 9000;
+                        if (armPos  <= -500 && parts.getSlidesPos() > 7500) {
                             stage = "arm weg en slides omhoog tweede sample";
                         }
                         break;
                     case "arm weg en slides omhoog tweede sample":
-                        sampleStorage = 0.5;
+                        sampleStorage = 0.3;
                         if (ms  > 1000) {
                             stage = "second sample dropped in basket";
                         }
